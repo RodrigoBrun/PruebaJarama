@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jarama Admin — Acceso privado</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages/admin-login.css" />
+</head>
+<body class="admin-auth-body">
+  <main class="admin-auth-page">
+    <section class="admin-auth-card">
+      <p class="eyebrow">Acceso privado</p>
+      <h1>Panel administrativo de Jarama</h1>
+      <p class="admin-auth-copy">
+        Este acceso no está vinculado al sitio público y no permite registro abierto.
+        Solo un usuario administrador autorizado puede ingresar.
+      </p>
+
+      <div class="admin-auth-alert admin-auth-alert--info" id="configNotice" hidden>
+        Falta configurar Supabase. Editá <code>js/admin/supabase-config.js</code> antes de probar el acceso real.
+      </div>
+
+      <div class="admin-auth-alert admin-auth-alert--error" id="loginFeedback" hidden></div>
+
+      <form class="admin-auth-form" id="adminLoginForm">
+        <label>
+          Correo administrador
+          <input type="email" id="adminEmail" name="email" autocomplete="username" required />
+        </label>
+
+        <label>
+          Contraseña
+          <input type="password" id="adminPassword" name="password" autocomplete="current-password" required />
+        </label>
+
+        <button class="btn btn-primary btn-block" type="submit" id="adminLoginBtn">
+          Ingresar al panel
+        </button>
+      </form>
+
+      <div class="admin-auth-footer">
+        <span><i class="ph-shield-check"></i> Sin registro público</span>
+        <span><i class="ph-lock-key"></i> Rol admin requerido</span>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../js/admin/login.js"></script>
+</body>
+</html>

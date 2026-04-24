@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jarama – Detalle de producto</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages/product-detail.css" />
+</head>
+<body>
+  <div class="mobile-quick-actions">
+    <button class="mobile-fab mobile-fab--menu" type="button" data-mobile-menu-open aria-label="Abrir menú">
+      <i class="ph-list"></i>
+    </button>
+    <a href="carrito.html" class="mobile-fab mobile-fab--cart" aria-label="Abrir carrito">
+      <i class="ph-shopping-cart-simple"></i>
+      <span class="cart-count" data-cart-count>0</span>
+    </a>
+  </div>
+
+  <div class="mobile-drawer" data-mobile-drawer aria-hidden="true">
+    <button class="mobile-drawer__overlay" type="button" data-mobile-menu-close aria-label="Cerrar menú"></button>
+    <aside class="mobile-drawer__panel">
+      <div class="mobile-drawer__top">
+        <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Home &amp; Deco</span>
+        </a>
+        <button class="mobile-drawer__close" type="button" data-mobile-menu-close aria-label="Cerrar menú">
+          <i class="ph-x"></i>
+        </button>
+      </div>
+      <nav class="mobile-drawer__nav" aria-label="Menú móvil">
+        <a href="index.html">Volver al catálogo</a>
+        <a href="#">Muebles</a>
+        <a href="#">Sillones y Butacas</a>
+        <a href="#">Deco</a>
+        <a href="#">Accesorios</a>
+        <a href="carrito.html">Carrito</a>
+      </nav>
+      <div class="mobile-drawer__footer">
+        Menú mobile pensado para navegar la tienda sin perder el carrito de vista.
+      </div>
+    </aside>
+  </div>
+
+  <header class="top-header">
+    <div class="container-wide top-header__inner">
+      <button class="icon-btn info-btn" aria-label="Información" data-open-info type="button">
+        <i class="ph-info"></i>
+      </button>
+
+      <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
+        <span class="logo-title">JARAMA</span>
+        <span class="logo-subtitle">Home &amp; Deco</span>
+      </a>
+
+      <div class="header-right">
+        <form class="search-form" role="search" data-search-form>
+          <input type="search" placeholder="Buscar" aria-label="Buscar productos" />
+          <button type="submit" aria-label="Buscar">
+            <i class="ph-magnifying-glass"></i>
+          </button>
+        </form>
+
+        <button class="icon-btn cart-btn" aria-label="Ver carrito" type="button" data-go-cart>
+          <i class="ph-shopping-cart-simple"></i>
+          <span class="cart-count" data-cart-count>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav" aria-label="Navegación principal">
+    <div class="container-wide">
+      <ul class="nav-list">
+        <li class="nav-item"><a href="index.html">Sillones y Butacas</a></li>
+        <li class="nav-item"><a href="#">Mesas</a></li>
+        <li class="nav-item"><a href="#">Muebles</a></li>
+        <li class="nav-item"><a href="#">Sillas</a></li>
+        <li class="nav-item"><a href="#">Iluminación</a></li>
+        <li class="nav-item"><a href="#">Cocina</a></li>
+        <li class="nav-item"><a href="#">Accesorios deco</a></li>
+        <li class="nav-item"><a href="#">Rebajados</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page-main">
+    <div class="container-wide">
+      <div class="product-toolbar">
+        <a href="index.html" class="back-link">← Regresar</a>
+
+        <div class="currency-switch" aria-label="Selector de moneda">
+          <button class="currency-btn active" data-currency="UYU" type="button">UYU</button>
+          <button class="currency-btn" data-currency="USD" type="button">USD</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="product-detail section-spacing">
+      <div class="container-wide product-detail__grid">
+        <div class="detail-left">
+          <nav class="thumbs-column" id="thumbsColumn" aria-label="Galería de imágenes"></nav>
+
+          <figure class="main-image-wrapper">
+            <img id="mainProductImage" src="" alt="Producto Jarama" />
+          </figure>
+        </div>
+
+        <article class="detail-right">
+          <span class="status-pill" id="productStatus">Disponible</span>
+          <div class="detail-badge-row" id="productBadges"></div>
+          <h1 id="productTitle">Producto Jarama</h1>
+          <p class="detail-code" id="productCode">Código:</p>
+          <p class="detail-measures" id="productMeasures">Medidas:</p>
+          <p class="detail-measures" id="productMaterial">Material:</p>
+          <div class="detail-color-block" id="productColorsBlock" hidden>
+            <p class="detail-label">Colores disponibles</p>
+            <div class="color-pills" id="productColors"></div>
+          </div>
+          <p class="detail-description" id="productDescription"></p>
+
+          <p class="detail-price" id="productPrice" data-price-uyu="0">$ 0</p>
+
+          <button class="detail-consult-link" type="button">
+            Consultar acerca de este artículo
+          </button>
+
+          <div class="detail-actions">
+            <div class="qty-wrapper">
+              <label for="qty">Cantidad</label>
+              <input id="qty" type="number" min="1" value="1" />
+            </div>
+
+            <button class="btn btn-primary btn-add-cart" type="button">
+              <i class="ph-shopping-cart-simple"></i>
+              Agregar al carrito
+            </button>
+
+            <button class="btn btn-secondary btn-shipping" type="button">
+              Ver costos de envío
+            </button>
+
+            <aside class="gift-card-box">
+              <p>Cada $50.000 en compras…</p>
+              <p class="gift-amount">GIFT CARD $ 2.500</p>
+              <a href="#">Ver condiciones</a>
+            </aside>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="related-products section-spacing" aria-label="Productos relacionados">
+      <div class="container-wide">
+        <div class="section-heading section-heading--center">
+          <div>
+            <p class="eyebrow">Más piezas de la colección</p>
+            <h2>Productos relacionados</h2>
+          </div>
+        </div>
+
+        <div class="related-grid" id="relatedProductsGrid"></div>
+        <button class="btn btn-secondary btn-see-more" type="button">Ver más</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="info-modal" data-info-modal aria-hidden="true">
+    <div class="info-modal__overlay" data-close-info></div>
+
+    <div class="info-modal__content">
+      <button class="info-modal__close" aria-label="Cerrar información" data-close-info type="button">
+        &times;
+      </button>
+
+      <h2 class="info-modal__title">Información de Jarama</h2>
+
+      <div class="info-modal__body">
+        <section>
+          <h3>Locales y horarios</h3>
+          <p>Queda preparado para mostrar locales, tiempos de atención y vías de contacto de forma ordenada.</p>
+        </section>
+
+        <section>
+          <h3>Asesoramiento</h3>
+          <p>También sirve para reforzar la atención personalizada antes del checkout invitado.</p>
+        </section>
+
+        <section>
+          <h3>Preguntas frecuentes</h3>
+          <p>Después podemos incluir envíos, reservas, pagos, cambios y stock real.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalConsulta" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" aria-label="Cerrar" type="button">&times;</button>
+
+      <h2 id="modal-title">Consultar producto</h2>
+
+      <form class="modal-form">
+        <label>
+          Escriba su consulta *
+          <textarea required></textarea>
+        </label>
+
+        <label>
+          Nombre
+          <input type="text" />
+        </label>
+
+        <label>
+          Correo electrónico *
+          <input type="email" required />
+        </label>
+
+        <button type="submit" class="btn btn-primary btn-submit">Enviar consulta</button>
+      </form>
+    </div>
+  </div>
+
+  <section class="payments">
+    <div class="container-wide">
+      <button class="btn btn-secondary btn-locations" type="button">VER LOCALES Y HORARIOS</button>
+      <div class="payments-logos">
+        <span>Transferencia</span>
+        <span>Visa</span>
+        <span>Mastercard</span>
+        <span>OCA</span>
+        <span>Abitab</span>
+        <span>RedPagos</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container-wide footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-main footer-logo">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Home &amp; Deco</span>
+        </a>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-column">
+          <h3>Tiendas</h3>
+          <ul>
+            <li><a href="#">Ubicación &amp; Horarios</a></li>
+            <li><a href="#">Asesoramiento</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Información</h3>
+          <ul>
+            <li><a href="#">Preguntas frecuentes</a></li>
+            <li><a href="#">La empresa</a></li>
+            <li><a href="#">Términos y condiciones</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Contacto</h3>
+          <ul>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">Newsletter</a></li>
+            <li><a href="#">Gift Guide</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/components/header.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="js/pages/product-detail.js"></script>
+</body>
+</html>

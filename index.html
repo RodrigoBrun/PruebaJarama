@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jarama – Home & Deco</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages/home.css" />
+</head>
+<body>
+  <div class="mobile-quick-actions">
+    <button class="mobile-fab mobile-fab--menu" type="button" data-mobile-menu-open aria-label="Abrir menú">
+      <i class="ph-list"></i>
+    </button>
+    <a href="carrito.html" class="mobile-fab mobile-fab--cart" aria-label="Abrir carrito">
+      <i class="ph-shopping-cart-simple"></i>
+      <span class="cart-count" data-cart-count>0</span>
+    </a>
+  </div>
+
+  <div class="mobile-drawer" data-mobile-drawer aria-hidden="true">
+  <button class="mobile-drawer__overlay" type="button" data-mobile-menu-close aria-label="Cerrar menú"></button>
+
+  <aside class="mobile-drawer__panel">
+    <div class="mobile-drawer__top">
+      <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
+        <span class="logo-title">JARAMA</span>
+        <span class="logo-subtitle">Home &amp; Deco</span>
+      </a>
+
+      <button class="mobile-drawer__close" type="button" data-mobile-menu-close aria-label="Cerrar menú">
+        <i class="ph-x"></i>
+      </button>
+    </div>
+
+    <nav class="mobile-drawer__nav" aria-label="Menú móvil">
+      <a href="index.html">
+        <i class="ph-house"></i>
+        <span>Inicio</span>
+      </a>
+
+      <a href="#">
+        <i class="ph-armchair"></i>
+        <span>Muebles</span>
+      </a>
+
+      <a href="#">
+        <i class="ph-armchair"></i>
+        <span>Sillones y Butacas</span>
+      </a>
+
+      <a href="#">
+        <i class="ph-sparkle"></i>
+        <span>Deco</span>
+      </a>
+
+      <a href="#">
+        <i class="ph-handbag"></i>
+        <span>Accesorios</span>
+      </a>
+
+      <a href="#">
+        <i class="ph-heart-straight"></i>
+        <span>Religioso</span>
+      </a>
+
+      <a href="carrito.html">
+        <i class="ph-shopping-cart-simple"></i>
+        <span>Carrito</span>
+      </a>
+    </nav>
+
+    <div class="mobile-drawer__footer">
+      Navegación rápida pensada para celular. El carrito queda siempre a mano mientras hacés scroll.
+    </div>
+  </aside>
+</div>
+
+  <header class="top-header">
+    <div class="container-wide top-header__inner">
+      <button class="icon-btn info-btn" aria-label="Información" data-open-info type="button">
+        <i class="ph-info"></i>
+      </button>
+
+      <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
+        <span class="logo-title">JARAMA</span>
+        <span class="logo-subtitle">Home &amp; Deco</span>
+      </a>
+
+      <div class="header-right">
+        <form class="search-form" role="search" data-search-form>
+          <input type="search" placeholder="Buscar" aria-label="Buscar productos" />
+          <button type="submit" aria-label="Buscar">
+            <i class="ph-magnifying-glass"></i>
+          </button>
+        </form>
+
+        <button class="icon-btn cart-btn" aria-label="Ver carrito" type="button" data-go-cart>
+          <i class="ph-shopping-cart-simple"></i>
+          <span class="cart-count" data-cart-count>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+ <nav class="main-nav" aria-label="Navegación principal">
+  <div class="container-wide">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="#">
+          <i class="ph-armchair"></i>
+          <span>Muebles</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="#">
+          <i class="ph-armchair"></i>
+          <span>Sillones y Butacas</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="#">
+          <i class="ph-sparkle"></i>
+          <span>Deco</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="#">
+          <i class="ph-handbag"></i>
+          <span>Accesorios</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="#">
+          <i class="ph-heart-straight"></i>
+          <span>Religioso</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+  <section class="category-header">
+    <div class="container-wide">
+      <h1>· COLECCIÓN JARAMA ·</h1>
+    </div>
+  </section>
+
+  <section class="intro-block" aria-labelledby="intro-title">
+    <div class="container narrow-container">
+      <h2 id="intro-title">MUEBLES, DECO Y ACCESORIOS PARA TU ESPACIO</h2>
+      <p>
+        En Jarama reunimos muebles, sillones, objetos deco, accesorios y artículos especiales
+        pensados para transformar cada rincón de tu casa.
+      </p>
+      <p>
+        Trabajamos con piezas seleccionadas que combinan diseño, calidez y estilo, buscando que cada
+        producto sume personalidad y armonía a tu ambiente.
+      </p>
+      <p>
+        Explorá nuestras categorías y encontrá desde muebles y sillones hasta detalles decorativos,
+        accesorios y artículos religiosos.
+      </p>
+    </div>
+  </section>
+
+  <main class="page-main">
+    <section class="product-list section-spacing" aria-label="Catálogo general de productos">
+      <div class="container-wide">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Selección destacada</p>
+            <h2>Catálogo principal</h2>
+          </div>
+          <p class="section-copy">Base dinámica lista para sumar filtros, stock real y panel admin más completo.</p>
+        </div>
+
+        <div class="product-grid" id="catalogoGrid"></div>
+
+        <nav class="pagination" aria-label="Paginación de productos">
+          <button class="page-btn" aria-label="Página anterior" type="button">&lt;</button>
+          <button class="page-btn active" aria-label="Página 1" type="button">1</button>
+          <button class="page-btn" aria-label="Página 2" type="button">2</button>
+          <button class="page-btn" aria-label="Página siguiente" type="button">&gt;</button>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <div class="info-modal" data-info-modal aria-hidden="true">
+    <div class="info-modal__overlay" data-close-info></div>
+
+    <div class="info-modal__content">
+      <button class="info-modal__close" aria-label="Cerrar información" data-close-info type="button">
+        &times;
+      </button>
+
+      <h2 class="info-modal__title">Información de Jarama</h2>
+
+      <div class="info-modal__body">
+        <section>
+          <h3>Locales y horarios</h3>
+          <p>Acá más adelante vamos a colocar locales, horarios y opciones de atención con un formato más comercial.</p>
+        </section>
+
+        <section>
+          <h3>Asesoramiento</h3>
+          <p>Este espacio queda preparado para destacar venta asistida, ambientación y ayuda para elegir productos.</p>
+        </section>
+
+        <section>
+          <h3>Preguntas frecuentes</h3>
+          <p>Después podemos conectarlo con envíos, tiempos de entrega, pagos y consultas reales.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <section class="payments">
+    <div class="container-wide">
+      <button class="btn btn-secondary btn-locations" type="button">VER LOCALES Y HORARIOS</button>
+
+      <div class="payments-logos">
+        <span>Transferencia</span>
+        <span>Visa</span>
+        <span>Mastercard</span>
+        <span>OCA</span>
+        <span>Abitab</span>
+        <span>RedPagos</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container-wide footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-main footer-logo">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Home &amp; Deco</span>
+        </a>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-column">
+          <h3>Tiendas</h3>
+          <ul>
+            <li><a href="#">Ubicación &amp; Horarios</a></li>
+            <li><a href="#">Asesoramiento</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Información</h3>
+          <ul>
+            <li><a href="#">Preguntas frecuentes</a></li>
+            <li><a href="#">La empresa</a></li>
+            <li><a href="#">Términos y condiciones</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Contacto</h3>
+          <ul>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">Newsletter</a></li>
+            <li><a href="#">Gift Guide</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/components/header.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="js/pages/home.js"></script>
+</body>
+</html>

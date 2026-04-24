@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jarama – Checkout invitado</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages/checkout.css" />
+</head>
+<body>
+  <div class="mobile-quick-actions">
+    <button class="mobile-fab mobile-fab--menu" type="button" data-mobile-menu-open aria-label="Abrir menú">
+      <i class="ph-list"></i>
+    </button>
+    <a href="carrito.html" class="mobile-fab mobile-fab--cart" aria-label="Abrir carrito">
+      <i class="ph-shopping-cart-simple"></i>
+      <span class="cart-count" data-cart-count>0</span>
+    </a>
+  </div>
+
+  <div class="mobile-drawer" data-mobile-drawer aria-hidden="true">
+    <button class="mobile-drawer__overlay" type="button" data-mobile-menu-close aria-label="Cerrar menú"></button>
+    <aside class="mobile-drawer__panel">
+      <div class="mobile-drawer__top">
+        <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Home &amp; Deco</span>
+        </a>
+        <button class="mobile-drawer__close" type="button" data-mobile-menu-close aria-label="Cerrar menú">
+          <i class="ph-x"></i>
+        </button>
+      </div>
+      <nav class="mobile-drawer__nav" aria-label="Menú móvil">
+        <a href="index.html">Inicio</a>
+        <a href="#">Muebles</a>
+        <a href="#">Sillones y Butacas</a>
+        <a href="#">Deco</a>
+        <a href="#">Accesorios</a>
+        <a href="carrito.html">Carrito</a>
+      </nav>
+      <div class="mobile-drawer__footer">
+        Menú rápido para celular. Podés abrir el carrito desde el botón flotante en cualquier momento.
+      </div>
+    </aside>
+  </div>
+  <header class="top-header">
+    <div class="container-wide top-header__inner">
+      <button class="icon-btn info-btn" aria-label="Información" data-open-info type="button">
+        <i class="ph-info"></i>
+      </button>
+
+      <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
+        <span class="logo-title">JARAMA</span>
+        <span class="logo-subtitle">Home &amp; Deco</span>
+      </a>
+
+      <div class="header-right">
+        <form class="search-form" role="search" data-search-form>
+          <input type="search" placeholder="Buscar" aria-label="Buscar productos" />
+          <button type="submit" aria-label="Buscar">
+            <i class="ph-magnifying-glass"></i>
+          </button>
+        </form>
+
+        <button class="icon-btn cart-btn" aria-label="Ver carrito" type="button" data-go-cart>
+          <i class="ph-shopping-cart-simple"></i>
+          <span class="cart-count" data-cart-count>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav" aria-label="Navegación principal">
+    <div class="container-wide">
+      <ul class="nav-list">
+        <li class="nav-item"><a href="index.html">Catálogo</a></li>
+        <li class="nav-item"><a href="carrito.html">Carrito</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page-main checkout-page">
+    <section class="section-spacing">
+      <div class="container-wide">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Sin registro</p>
+            <h1>Checkout invitado</h1>
+          </div>
+          <p class="section-copy">Esta es la base del formulario de compra sin cuenta. Después lo conectamos con base de datos, estados del pedido y Mercado Pago.</p>
+        </div>
+
+        <div class="checkout-layout" id="checkoutLayout">
+          <form class="checkout-form" id="checkoutForm">
+            <section class="checkout-block">
+              <div class="checkout-block__heading">
+                <h2>Datos del comprador</h2>
+                <p>Información básica para continuar la compra.</p>
+              </div>
+
+              <div class="form-grid two-columns">
+                <label>
+                  Nombre y apellido *
+                  <input type="text" name="nombre" required />
+                </label>
+
+                <label>
+                  Teléfono / WhatsApp *
+                  <input type="tel" name="telefono" required />
+                </label>
+
+                <label>
+                  Correo electrónico *
+                  <input type="email" name="email" required />
+                </label>
+
+                <label>
+                  Departamento *
+                  <input type="text" name="departamento" required />
+                </label>
+              </div>
+            </section>
+
+            <section class="checkout-block">
+              <div class="checkout-block__heading">
+                <h2>Entrega</h2>
+                <p>Base simple para luego conectar reglas reales de envío.</p>
+              </div>
+
+              <div class="form-grid two-columns">
+                <label>
+                  Ciudad *
+                  <input type="text" name="ciudad" required />
+                </label>
+
+                <label>
+                  Dirección *
+                  <input type="text" name="direccion" required />
+                </label>
+
+                <label class="full-width">
+                  Referencia adicional
+                  <textarea name="referencia" placeholder="Apartamento, esquina, instrucciones para entrega, etc."></textarea>
+                </label>
+              </div>
+
+              <div class="option-group">
+                <p class="option-group__title">Método de envío</p>
+                <label class="option-card">
+                  <input type="radio" name="envio" value="coordinado" checked />
+                  <span>
+                    <strong>Envío a coordinar</strong>
+                    <small>Ideal para muebles, entregas personalizadas o cotización posterior.</small>
+                  </span>
+                </label>
+                <label class="option-card">
+                  <input type="radio" name="envio" value="retiro" />
+                  <span>
+                    <strong>Retiro en local</strong>
+                    <small>El cliente coordina día y horario después de la compra.</small>
+                  </span>
+                </label>
+              </div>
+            </section>
+
+            <section class="checkout-block">
+              <div class="checkout-block__heading">
+                <h2>Pago</h2>
+                <p>Placeholder prolijo hasta integrar pasarela real.</p>
+              </div>
+
+              <div class="option-group">
+                <p class="option-group__title">Método de pago</p>
+                <label class="option-card">
+                  <input type="radio" name="pago" value="mercado-pago" checked />
+                  <span>
+                    <strong>Mercado Pago</strong>
+                    <small>Próxima integración real para pago online.</small>
+                  </span>
+                </label>
+                <label class="option-card">
+                  <input type="radio" name="pago" value="transferencia" />
+                  <span>
+                    <strong>Transferencia</strong>
+                    <small>Se envían datos de pago luego de confirmar el pedido.</small>
+                  </span>
+                </label>
+              </div>
+            </section>
+
+            <div class="checkout-actions">
+              <a href="carrito.html" class="btn btn-secondary">Volver al carrito</a>
+              <button type="submit" class="btn btn-primary" id="confirmOrderBtn">Confirmar pedido</button>
+            </div>
+          </form>
+
+          <aside class="checkout-summary" id="checkoutSummary">
+            <h2>Resumen del pedido</h2>
+            <div id="checkoutItems"></div>
+            <div class="summary-divider"></div>
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <strong id="checkoutSubtotal">$ 0</strong>
+            </div>
+            <div class="summary-row muted">
+              <span>Envío</span>
+              <span>A coordinar</span>
+            </div>
+            <div class="summary-row total-row">
+              <span>Total estimado</span>
+              <strong id="checkoutTotal">$ 0</strong>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="info-modal" data-info-modal aria-hidden="true">
+    <div class="info-modal__overlay" data-close-info></div>
+    <div class="info-modal__content">
+      <button class="info-modal__close" aria-label="Cerrar información" data-close-info type="button">&times;</button>
+      <h2 class="info-modal__title">Información de Jarama</h2>
+      <div class="info-modal__body">
+        <section>
+          <h3>Compra como invitado</h3>
+          <p>Se prioriza una experiencia simple: el cliente compra sin cuenta y el control queda del lado administrativo.</p>
+        </section>
+        <section>
+          <h3>Siguiente integración</h3>
+          <p>En la próxima fase este formulario se puede conectar a base de datos, crear el pedido y redirigir a Mercado Pago.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <section class="payments">
+    <div class="container-wide">
+      <button class="btn btn-secondary btn-locations" type="button">VER LOCALES Y HORARIOS</button>
+      <div class="payments-logos">
+        <span>Transferencia</span>
+        <span>Visa</span>
+        <span>Mastercard</span>
+        <span>OCA</span>
+        <span>Abitab</span>
+        <span>RedPagos</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container-wide footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo-main footer-logo">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Home &amp; Deco</span>
+        </a>
+      </div>
+      <div class="footer-columns">
+        <div class="footer-column">
+          <h3>Tiendas</h3>
+          <ul>
+            <li><a href="#">Ubicación &amp; Horarios</a></li>
+            <li><a href="#">Asesoramiento</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Información</h3>
+          <ul>
+            <li><a href="#">Preguntas frecuentes</a></li>
+            <li><a href="#">La empresa</a></li>
+            <li><a href="#">Términos y condiciones</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Contacto</h3>
+          <ul>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">Newsletter</a></li>
+            <li><a href="#">Gift Guide</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/components/header.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/pages/checkout.js"></script>
+</body>
+</html>

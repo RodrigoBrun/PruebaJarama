@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jarama Admin — Productos</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages/admin-dashboard.css" />
+  <link rel="stylesheet" href="../css/pages/admin-products.css" />
+</head>
+<body class="admin-body">
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <a href="index.html" class="admin-brand">
+        <span class="logo-title">JARAMA</span>
+        <span class="logo-subtitle">Panel privado</span>
+      </a>
+
+      <nav class="admin-nav" aria-label="Navegación del panel">
+        <a href="index.html" class="admin-nav__item">
+          <i class="ph-squares-four"></i>
+          Dashboard
+        </a>
+        <a href="productos.html" class="admin-nav__item is-active">
+          <i class="ph-armchair"></i>
+          Productos
+        </a>
+        <button class="admin-nav__item admin-nav__item--muted" type="button" disabled>
+          <i class="ph-receipt"></i>
+          Pedidos <span>Próx.</span>
+        </button>
+        <button class="admin-nav__item admin-nav__item--muted" type="button" disabled>
+          <i class="ph-tag"></i>
+          Promos <span>Próx.</span>
+        </button>
+      </nav>
+
+      <div class="admin-sidebar__footer">
+        <p>CRUD real conectado a Supabase. Lo que cambies acá se refleja en la tienda pública.</p>
+        <button class="btn btn-secondary btn-block" type="button" id="logoutBtn">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div>
+          <p class="eyebrow">Gestión en vivo</p>
+          <h1>Productos de Jarama</h1>
+        </div>
+
+        <div class="admin-user-chip">
+          <i class="ph-user-circle"></i>
+          <div>
+            <strong id="adminName">Administrador</strong>
+            <span id="adminEmail">cargando...</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-status-card" id="productsStatus" hidden></section>
+
+      <section class="admin-grid admin-grid--stats admin-grid--products-mini">
+        <article class="admin-stat-card">
+          <p>Productos cargados</p>
+          <strong id="statProductCount">—</strong>
+          <span>Total sincronizado en Supabase</span>
+        </article>
+        <article class="admin-stat-card">
+          <p>Publicados</p>
+          <strong id="statPublishedCount">—</strong>
+          <span>Con stock y visibles en tienda</span>
+        </article>
+        <article class="admin-stat-card">
+          <p>Destacados</p>
+          <strong id="statFeaturedCount">—</strong>
+          <span>Marcados para resaltar</span>
+        </article>
+        <article class="admin-stat-card">
+          <p>Sin stock</p>
+          <strong id="statOutCount">—</strong>
+          <span>Piezas pausadas o agotadas</span>
+        </article>
+      </section>
+
+      <section class="admin-products-layout">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Formulario</p>
+              <h2 id="productFormTitle">Nuevo producto</h2>
+            </div>
+            <div class="admin-toolbar">
+              <button type="button" class="btn btn-secondary" id="seedDemoBtn">
+                <i class="ph-cloud-arrow-up"></i>
+                Importar demo actual
+              </button>
+              <button type="button" class="btn btn-secondary" id="resetProductFormBtn">
+                <i class="ph-arrow-counter-clockwise"></i>
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <form class="admin-product-form" id="productForm">
+            <input type="hidden" id="productId" />
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Nombre *
+                <input type="text" id="productName" required />
+              </label>
+
+              <label>
+                Slug *
+                <input type="text" id="productSlug" required />
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--three">
+              <label>
+                Categoría
+                <input type="text" id="productCategory" placeholder="Sillones y Butacas" />
+              </label>
+
+              <label>
+                Código
+                <input type="text" id="productCode" placeholder="JRM-SIL-009" />
+              </label>
+
+              <label>
+                Precio UYU *
+                <input type="number" min="0" step="0.01" id="productPrice" required />
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--three">
+              <label>
+                Largo
+                <input type="text" id="measureLargo" placeholder="2.30 mts" />
+              </label>
+
+              <label>
+                Profundidad
+                <input type="text" id="measureProfundidad" placeholder="0.90 mts" />
+              </label>
+
+              <label>
+                Altura
+                <input type="text" id="measureAltura" placeholder="0.76 mts" />
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Material
+                <input type="text" id="productMaterial" placeholder="Lino crudo" />
+              </label>
+
+              <label>
+                Tags
+                <input type="text" id="productTags" placeholder="premium, living, lino" />
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Colores disponibles
+                <input type="text" id="productColorsInput" placeholder="Crudo, arena, grafito" />
+              </label>
+
+              <div class="admin-radio-group">
+                <span class="admin-field-label">Stock</span>
+                <div class="admin-radio-cards">
+                  <label class="admin-radio-card">
+                    <input type="radio" name="stockStatus" id="stockYes" value="in" checked />
+                    <span>Con stock</span>
+                  </label>
+                  <label class="admin-radio-card">
+                    <input type="radio" name="stockStatus" id="stockNo" value="out" />
+                    <span>Sin stock</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <label>
+              Resumen
+              <textarea id="productSummary" rows="2" placeholder="Texto corto para cards o promos."></textarea>
+            </label>
+
+            <label>
+              Descripción
+              <textarea id="productDescription" rows="4" placeholder="Descripción completa del producto."></textarea>
+            </label>
+
+            <label>
+              Imágenes
+              <textarea id="productImages" rows="4" placeholder="Una URL por línea. También podés pegar rutas locales como imagenes/sillon-1.jpg"></textarea>
+            </label>
+
+            <div class="admin-form-switches admin-form-switches--badges">
+              <span class="admin-field-label">Atributos de visibilidad</span>
+              <label class="admin-switch">
+                <input type="checkbox" id="badgeFeatured" />
+                <span>Destacado</span>
+              </label>
+              <label class="admin-switch">
+                <input type="checkbox" id="badgeNew" />
+                <span>Nuevo</span>
+              </label>
+              <label class="admin-switch">
+                <input type="checkbox" id="badgeBestSeller" />
+                <span>Más vendido</span>
+              </label>
+              <label class="admin-switch">
+                <input type="checkbox" id="badgeOffer" />
+                <span>Oferta</span>
+              </label>
+              <label class="admin-switch">
+                <input type="checkbox" id="badgeLimited" />
+                <span>Edición limitada</span>
+              </label>
+            </div>
+
+            <div class="admin-form-actions">
+              <button class="btn btn-primary" type="submit" id="saveProductBtn">
+                <i class="ph-floppy-disk"></i>
+                Guardar producto
+              </button>
+            </div>
+          </form>
+        </article>
+
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Base real</p>
+              <h2>Listado de productos</h2>
+            </div>
+
+            <div class="admin-toolbar">
+              <label class="admin-search-box">
+                <i class="ph-magnifying-glass"></i>
+                <input type="search" id="productSearch" placeholder="Buscar por nombre, slug, código o color" />
+              </label>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table admin-products-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                  <th>Estado</th>
+                  <th>Atributos</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <tr>
+                  <td colspan="5">Cargando productos…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="../js/admin/products.js"></script>
+</body>
+</html>
