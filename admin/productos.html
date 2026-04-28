@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Jarama Admin — Productos</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
   <script src="https://unpkg.com/phosphor-icons"></script>
 
   <link rel="stylesheet" href="../css/base.css" />
@@ -14,44 +17,71 @@
   <link rel="stylesheet" href="../css/pages/admin-dashboard.css" />
   <link rel="stylesheet" href="../css/pages/admin-products.css" />
 </head>
+
 <body class="admin-body">
   <div class="admin-shell">
-    <aside class="admin-sidebar">
-      <a href="index.html" class="admin-brand">
-        <span class="logo-title">JARAMA</span>
-        <span class="logo-subtitle">Panel privado</span>
-      </a>
+    <div class="admin-shell__overlay" data-admin-overlay data-admin-sidebar-close></div>
+
+    <aside class="admin-sidebar" data-admin-sidebar>
+      <div class="admin-sidebar__head">
+        <a href="index.html" class="admin-brand">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Panel privado</span>
+        </a>
+        <button class="admin-sidebar__close" type="button" data-admin-sidebar-close aria-label="Cerrar menú">
+          <i class="ph-x"></i>
+        </button>
+      </div>
 
       <nav class="admin-nav" aria-label="Navegación del panel">
         <a href="index.html" class="admin-nav__item">
           <i class="ph-squares-four"></i>
-          Dashboard
+          <span>Dashboard</span>
         </a>
+
         <a href="productos.html" class="admin-nav__item is-active">
           <i class="ph-armchair"></i>
-          Productos
+          <span>Productos</span>
         </a>
-        <button class="admin-nav__item admin-nav__item--muted" type="button" disabled>
+
+        <a href="categorias.html" class="admin-nav__item">
+          <i class="ph-tree-structure"></i>
+          <span>Categorías</span>
+        </a>
+
+        <a href="pedidos.html" class="admin-nav__item">
           <i class="ph-receipt"></i>
-          Pedidos <span>Próx.</span>
-        </button>
-        <button class="admin-nav__item admin-nav__item--muted" type="button" disabled>
-          <i class="ph-tag"></i>
-          Promos <span>Próx.</span>
-        </button>
+          <span>Pedidos</span>
+        </a>
+
+        <a href="banners.html" class="admin-nav__item">
+          <i class="ph-images"></i>
+          <span>Banners</span>
+        </a>
+
+        <a href="bsd.html" class="admin-nav__item">
+          <i class="ph-database"></i>
+          <span>BSD</span>
+        </a>
       </nav>
 
       <div class="admin-sidebar__footer">
-        <p>CRUD real conectado a Supabase. Lo que cambies acá se refleja en la tienda pública.</p>
+        <p>CRUD real conectado a Supabase. Ahora también podés previsualizar, subir y gestionar imágenes de productos
+          sin pelearte con URLs sueltas.</p>
         <button class="btn btn-secondary btn-block" type="button" id="logoutBtn">Cerrar sesión</button>
       </div>
     </aside>
 
     <main class="admin-main">
       <header class="admin-topbar">
-        <div>
-          <p class="eyebrow">Gestión en vivo</p>
-          <h1>Productos de Jarama</h1>
+        <div class="admin-topbar__left">
+          <button class="admin-mobile-toggle" type="button" data-admin-sidebar-toggle aria-label="Abrir navegación">
+            <i class="ph-list"></i>
+          </button>
+          <div>
+            <p class="eyebrow">Gestión en vivo</p>
+            <h1>Productos de Jarama</h1>
+          </div>
         </div>
 
         <div class="admin-user-chip">
@@ -71,20 +101,23 @@
           <strong id="statProductCount">—</strong>
           <span>Total sincronizado en Supabase</span>
         </article>
+
         <article class="admin-stat-card">
           <p>Publicados</p>
           <strong id="statPublishedCount">—</strong>
           <span>Con stock y visibles en tienda</span>
         </article>
+
         <article class="admin-stat-card">
           <p>Destacados</p>
           <strong id="statFeaturedCount">—</strong>
           <span>Marcados para resaltar</span>
         </article>
+
         <article class="admin-stat-card">
           <p>Sin stock</p>
           <strong id="statOutCount">—</strong>
-          <span>Piezas pausadas o agotadas</span>
+          <span>Piezas pausadas o archivadas</span>
         </article>
       </section>
 
@@ -95,11 +128,13 @@
               <p class="eyebrow">Formulario</p>
               <h2 id="productFormTitle">Nuevo producto</h2>
             </div>
+
             <div class="admin-toolbar">
               <button type="button" class="btn btn-secondary" id="seedDemoBtn">
                 <i class="ph-cloud-arrow-up"></i>
                 Importar demo actual
               </button>
+
               <button type="button" class="btn btn-secondary" id="resetProductFormBtn">
                 <i class="ph-arrow-counter-clockwise"></i>
                 Limpiar
@@ -124,22 +159,31 @@
 
             <div class="admin-form-grid admin-form-grid--three">
               <label>
-                Categoría
-                <input type="text" id="productCategory" placeholder="Sillones y Butacas" />
+                Categoría principal *
+                <select id="productCategorySelect" required>
+                  <option value="">Cargando categorías…</option>
+                </select>
+              </label>
+
+              <label>
+                Subcategoría
+                <select id="productSubcategorySelect">
+                  <option value="">Primero elegí una categoría</option>
+                </select>
               </label>
 
               <label>
                 Código
                 <input type="text" id="productCode" placeholder="JRM-SIL-009" />
               </label>
+            </div>
 
+            <div class="admin-form-grid admin-form-grid--three">
               <label>
                 Precio UYU *
                 <input type="number" min="0" step="0.01" id="productPrice" required />
               </label>
-            </div>
 
-            <div class="admin-form-grid admin-form-grid--three">
               <label>
                 Largo
                 <input type="text" id="measureLargo" placeholder="2.30 mts" />
@@ -149,14 +193,14 @@
                 Profundidad
                 <input type="text" id="measureProfundidad" placeholder="0.90 mts" />
               </label>
+            </div>
 
+            <div class="admin-form-grid admin-form-grid--three">
               <label>
                 Altura
                 <input type="text" id="measureAltura" placeholder="0.76 mts" />
               </label>
-            </div>
 
-            <div class="admin-form-grid admin-form-grid--two">
               <label>
                 Material
                 <input type="text" id="productMaterial" placeholder="Lino crudo" />
@@ -181,6 +225,7 @@
                     <input type="radio" name="stockStatus" id="stockYes" value="in" checked />
                     <span>Con stock</span>
                   </label>
+
                   <label class="admin-radio-card">
                     <input type="radio" name="stockStatus" id="stockNo" value="out" />
                     <span>Sin stock</span>
@@ -199,33 +244,66 @@
               <textarea id="productDescription" rows="4" placeholder="Descripción completa del producto."></textarea>
             </label>
 
-            <label>
-              Imágenes
-              <textarea id="productImages" rows="4" placeholder="Una URL por línea. También podés pegar rutas locales como imagenes/sillon-1.jpg"></textarea>
-            </label>
+            <section class="admin-media-block">
+              <div class="admin-media-block__head">
+                <div>
+                  <p class="eyebrow">Imágenes</p>
+                  <h3>Galería del producto</h3>
+                </div>
+              </div>
+
+              <div class="admin-form-grid admin-form-grid--two">
+                <label>
+                  URLs de imágenes
+                  <textarea id="productImages" rows="5"
+                    placeholder="Una URL por línea. También podés pegar rutas locales o links ya subidos."></textarea>
+                </label>
+
+                <div class="admin-upload-card">
+                  <label class="admin-upload-card__label" for="productImageFiles">
+                    Subir imágenes
+                  </label>
+
+                  <input type="file" id="productImageFiles" accept="image/*" multiple />
+
+                  <div class="admin-upload-card__actions">
+                    <button type="button" class="btn btn-secondary" id="uploadProductImagesBtn">
+                      <i class="ph-upload-simple"></i>
+                      Subir seleccionadas
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" id="clearProductImageFilesBtn">
+                      <i class="ph-x-circle"></i>
+                      Limpiar selección
+                    </button>
+                  </div>
+
+                  <p class="admin-upload-card__help">
+                    Si ya tenés imágenes locales, las podés seleccionar acá y se suben solas a Supabase Storage.
+                  </p>
+                </div>
+              </div>
+
+              <div class="admin-preview-block">
+                <div class="admin-preview-block__top">
+                  <strong>Preview de imágenes</strong>
+                  <span>Podés quitar cualquiera antes de guardar.</span>
+                </div>
+
+                <div id="productImagesPreview" class="admin-preview-grid">
+                  <div class="admin-preview-empty">Todavía no hay imágenes cargadas para este producto.</div>
+                </div>
+              </div>
+            </section>
 
             <div class="admin-form-switches admin-form-switches--badges">
               <span class="admin-field-label">Atributos de visibilidad</span>
-              <label class="admin-switch">
-                <input type="checkbox" id="badgeFeatured" />
-                <span>Destacado</span>
-              </label>
-              <label class="admin-switch">
-                <input type="checkbox" id="badgeNew" />
-                <span>Nuevo</span>
-              </label>
-              <label class="admin-switch">
-                <input type="checkbox" id="badgeBestSeller" />
-                <span>Más vendido</span>
-              </label>
-              <label class="admin-switch">
-                <input type="checkbox" id="badgeOffer" />
-                <span>Oferta</span>
-              </label>
-              <label class="admin-switch">
-                <input type="checkbox" id="badgeLimited" />
-                <span>Edición limitada</span>
-              </label>
+              <label class="admin-switch"><input type="checkbox" id="badgeFeatured" /><span>Destacado</span></label>
+              <label class="admin-switch"><input type="checkbox" id="badgeNew" /><span>Nuevo</span></label>
+              <label class="admin-switch"><input type="checkbox" id="badgeBestSeller" /><span>Más vendido</span></label>
+              <label class="admin-switch"><input type="checkbox" id="badgeOffer" /><span>Oferta</span></label>
+              <label class="admin-switch"><input type="checkbox" id="badgeLimited" /><span>Edición
+                  limitada</span></label>
             </div>
 
             <div class="admin-form-actions">
@@ -244,11 +322,33 @@
               <h2>Listado de productos</h2>
             </div>
 
-            <div class="admin-toolbar">
+            <div class="admin-toolbar admin-toolbar--filters">
               <label class="admin-search-box">
                 <i class="ph-magnifying-glass"></i>
-                <input type="search" id="productSearch" placeholder="Buscar por nombre, slug, código o color" />
+                <input type="search" id="productSearch"
+                  placeholder="Buscar por nombre, slug, código, categoría o color" />
               </label>
+
+              <select id="productFilterStock" class="admin-filter-select" aria-label="Filtrar por stock">
+                <option value="all">Todo el stock</option>
+                <option value="in">Con stock</option>
+                <option value="out">Sin stock</option>
+              </select>
+
+              <select id="productFilterFeatured" class="admin-filter-select" aria-label="Filtrar por destacados">
+                <option value="all">Todos</option>
+                <option value="featured">Solo destacados</option>
+                <option value="normal">No destacados</option>
+              </select>
+
+              <select id="productFilterCategory" class="admin-filter-select" aria-label="Filtrar por categoría">
+                <option value="all">Todas las categorías</option>
+              </select>
+
+              <button type="button" class="btn btn-secondary" id="clearProductFiltersBtn">
+                <i class="ph-funnel-x"></i>
+                Limpiar filtros
+              </button>
             </div>
           </div>
 
@@ -257,15 +357,16 @@
               <thead>
                 <tr>
                   <th>Producto</th>
+                  <th>Categoría</th>
                   <th>Precio</th>
-                  <th>Estado</th>
-                  <th>Atributos</th>
+                  <th>Stock</th>
+                  <th>Badges</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody id="productsTableBody">
                 <tr>
-                  <td colspan="5">Cargando productos…</td>
+                  <td colspan="6">Cargando productos…</td>
                 </tr>
               </tbody>
             </table>
@@ -275,6 +376,32 @@
     </main>
   </div>
 
+  <div class="admin-confirm" id="productConfirmModal" hidden>
+    <div class="admin-confirm__overlay" data-confirm-close></div>
+    <div class="admin-confirm__dialog" role="dialog" aria-modal="true" aria-labelledby="productConfirmTitle">
+      <button type="button" class="admin-confirm__close" data-confirm-close aria-label="Cerrar">
+        <i class="ph-x"></i>
+      </button>
+
+      <div class="admin-confirm__content">
+        <p class="eyebrow">Confirmación</p>
+        <h2 id="productConfirmTitle">Confirmar acción</h2>
+        <p id="productConfirmMessage">¿Querés continuar?</p>
+
+        <div class="admin-confirm__actions">
+          <button type="button" class="btn btn-secondary" id="productConfirmCancelBtn">
+            Cancelar
+          </button>
+
+          <button type="button" class="btn btn-primary" id="productConfirmAcceptBtn">
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="../js/admin/products.js"></script>
 </body>
+
 </html>

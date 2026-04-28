@@ -1,8 +1,29 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_URL, SUPABASE_ANON_KEY, isSupabaseConfigured } from "../config/supabase.js";
+
 const checkoutLayout = document.getElementById("checkoutLayout");
 const checkoutForm = document.getElementById("checkoutForm");
 const checkoutItems = document.getElementById("checkoutItems");
 const checkoutSubtotal = document.getElementById("checkoutSubtotal");
 const checkoutTotal = document.getElementById("checkoutTotal");
+const confirmOrderBtn = document.getElementById("confirmOrderBtn");
+
+let publicClient = null;
+
+function getSupabaseClient() {
+  if (!isSupabaseConfigured()) return null;
+
+  if (!publicClient) {
+    publicClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false
+      }
+    });
+  }
+
+  return publicClient;
+}
 
 function createEmptyState() {
   checkoutLayout.innerHTML = `
@@ -22,7 +43,7 @@ function createSummaryItem(item) {
   article.className = "checkout-item";
   article.innerHTML = `
     <div class="checkout-item__image">
-      <img src="${item.imagen}" alt="${item.nombre}">
+      <img src="${item.imagen || "imagenes/placeholder.jpg"}" alt="${item.nombre}">
     </div>
     <div>
       <h3 class="checkout-item__name">${item.nombre}</h3>
@@ -53,37 +74,83 @@ function renderSummary() {
 }
 
 function createOrderCode() {
-  const timestamp = Date.now().toString().slice(-6);
-  return `JRM-${timestamp}`;
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `JRM-${y}${m}${d}-${rand}`;
 }
 
-function handleSubmit(event) {
-  event.preventDefault();
+function buildOrderPayload(orderId, orderCode, buyer, subtotal) {
+  return {
+    id: orderId,
+    order_code: orderCode,
+    customer_name: buyer.nombre,
+    customer_phone: buyer.telefono,
+    customer_email: buyer.email,
+    customer_department: buyer.departamento,
+    customer_city: buyer.ciudad,
+    customer_address: buyer.direccion,
+    customer_reference: buyer.referencia || null,
+    shipping_method: buyer.envio,
+    payment_method: buyer.pago,
+    subtotal_uyu: subtotal,
+    total_uyu: subtotal,
+    status: "pending"
+  };
+}
 
-  const cart = window.JaramaApp.getCartItems();
-  if (!cart.length) {
-    createEmptyState();
-    return;
+function buildOrderItemsPayload(orderId, cart) {
+  return cart.map((item) => {
+    const quantity = Number(item.cantidad || 1);
+    const unitPrice = Number(item.precioUYU || 0);
+
+    return {
+      order_id: orderId,
+      product_id: item.id ? String(item.id) : null,
+      product_slug: item.slug || null,
+      product_name: item.nombre || "Producto Jarama",
+      unit_price_uyu: unitPrice,
+      quantity,
+      subtotal_uyu: unitPrice * quantity
+    };
+  });
+}
+
+async function persistOrder(buyer, cart, subtotal) {
+  const client = getSupabaseClient();
+
+  if (!client) {
+    throw new Error("Supabase no está configurado todavía.");
   }
 
-  const formData = new FormData(checkoutForm);
-  const buyer = Object.fromEntries(formData.entries());
-  const subtotal = window.JaramaApp.getCartSubtotal();
+  const orderId = crypto.randomUUID();
   const orderCode = createOrderCode();
 
-  const order = {
-    codigo: orderCode,
-    fecha: new Date().toISOString(),
-    comprador: buyer,
-    items: cart,
-    subtotal,
-    total: subtotal,
-    estado: "pendiente"
-  };
+  const orderPayload = buildOrderPayload(orderId, orderCode, buyer, subtotal);
+  const itemsPayload = buildOrderItemsPayload(orderId, cart);
 
-  localStorage.setItem("jarama-last-order", JSON.stringify(order));
-  window.JaramaApp.clearCart();
+  const { error: orderError } = await client
+    .from("orders")
+    .insert(orderPayload);
 
+  if (orderError) {
+    throw orderError;
+  }
+
+  const { error: itemsError } = await client
+    .from("order_items")
+    .insert(itemsPayload);
+
+  if (itemsError) {
+    throw itemsError;
+  }
+
+  return { orderId, orderCode };
+}
+
+function renderSuccess(orderCode, buyer, cart, subtotal) {
   const buyerName = buyer.nombre || "Cliente";
   const itemsText = cart
     .map((item) => `<li>${item.nombre} × ${item.cantidad} — ${window.JaramaApp.formatUyu(Number(item.precioUYU) * Number(item.cantidad))}</li>`)
@@ -93,10 +160,10 @@ function handleSubmit(event) {
     <section class="section-spacing">
       <div class="container-wide">
         <article class="checkout-success">
-          <p class="eyebrow">Pedido generado</p>
+          <p class="eyebrow">Pedido guardado</p>
           <h1>Gracias, ${buyerName}</h1>
           <span class="checkout-success__code">${orderCode}</span>
-          <p>El pedido quedó generado en el frontend como base de trabajo. El siguiente paso será guardarlo en base de datos y luego enviarlo a la pasarela de pago real.</p>
+          <p>Tu pedido quedó guardado correctamente en la base de datos con estado pendiente. El siguiente paso natural es conectarlo con Mercado Pago.</p>
 
           <div class="checkout-success__box">
             <p><strong>Resumen:</strong></p>
@@ -114,6 +181,58 @@ function handleSubmit(event) {
       </div>
     </section>
   `;
+}
+
+async function handleSubmit(event) {
+  event.preventDefault();
+
+  const cart = window.JaramaApp.getCartItems();
+  if (!cart.length) {
+    createEmptyState();
+    return;
+  }
+
+  const formData = new FormData(checkoutForm);
+  const buyer = Object.fromEntries(formData.entries());
+  const subtotal = window.JaramaApp.getCartSubtotal();
+
+  if (!buyer.nombre || !buyer.telefono || !buyer.email || !buyer.departamento || !buyer.ciudad || !buyer.direccion) {
+    alert("Completá todos los datos obligatorios antes de confirmar.");
+    return;
+  }
+
+  const originalText = confirmOrderBtn?.innerHTML || "Confirmar pedido";
+
+  try {
+    if (confirmOrderBtn) {
+      confirmOrderBtn.disabled = true;
+      confirmOrderBtn.textContent = "Guardando pedido...";
+    }
+
+    const { orderCode } = await persistOrder(buyer, cart, subtotal);
+
+    localStorage.setItem(
+      "jarama-last-order",
+      JSON.stringify({
+        codigo: orderCode,
+        fecha: new Date().toISOString(),
+        comprador: buyer,
+        items: cart,
+        subtotal,
+        total: subtotal,
+        estado: "pending"
+      })
+    );
+
+    window.JaramaApp.clearCart();
+    renderSuccess(orderCode, buyer, cart, subtotal);
+  } catch (error) {
+    alert(error.message || "No pudimos guardar el pedido. Probá de nuevo.");
+    if (confirmOrderBtn) {
+      confirmOrderBtn.disabled = false;
+      confirmOrderBtn.innerHTML = originalText;
+    }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

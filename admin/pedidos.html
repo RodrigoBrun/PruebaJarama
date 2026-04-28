@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Jarama Admin — Pedidos</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages/admin-dashboard.css" />
+  <link rel="stylesheet" href="../css/pages/admin-products.css" />
+
+  <style>
+    .orders-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .orders-filter-select {
+      min-width: 180px;
+      min-height: 46px;
+      border: 1px solid var(--color-border-soft);
+      background: #fff;
+      border-radius: 999px;
+      padding: 0 42px 0 14px;
+      color: var(--color-text-strong);
+      font-size: 14px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #9f8a76 50%),
+        linear-gradient(135deg, #9f8a76 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 12px) calc(50% - 3px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+    }
+
+    .orders-detail-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .orders-detail-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 1px solid var(--color-border-soft);
+      border-radius: 16px;
+      background: #faf6f2;
+    }
+
+    .orders-detail-card strong {
+      color: var(--color-text-strong);
+    }
+
+    .orders-detail-lines {
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+      color: #6f5d51;
+      line-height: 1.6;
+    }
+
+    .orders-detail-items {
+      display: grid;
+      gap: 10px;
+    }
+
+    .orders-detail-item {
+      padding: 14px 16px;
+      border: 1px solid var(--color-border-soft);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .orders-status-editor {
+      display: grid;
+      gap: 12px;
+    }
+
+    .orders-status-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .admin-inline-actions .admin-inline-btn[disabled] {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 860px) {
+      .orders-toolbar {
+        width: 100%;
+      }
+
+      .orders-filter-select {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .orders-status-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body class="admin-body">
+  <div class="admin-shell">
+    <div class="admin-shell__overlay" data-admin-overlay data-admin-sidebar-close></div>
+
+    <aside class="admin-sidebar" data-admin-sidebar>
+      <div class="admin-sidebar__head">
+        <a href="index.html" class="admin-brand">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Panel privado</span>
+        </a>
+        <button class="admin-sidebar__close" type="button" data-admin-sidebar-close aria-label="Cerrar menú">
+          <i class="ph-x"></i>
+        </button>
+      </div>
+
+      <nav class="admin-nav" aria-label="Navegación del panel">
+        <a href="index.html" class="admin-nav__item">
+          <i class="ph-squares-four"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="productos.html" class="admin-nav__item">
+          <i class="ph-armchair"></i>
+          <span>Productos</span>
+        </a>
+
+        <a href="categorias.html" class="admin-nav__item">
+          <i class="ph-tree-structure"></i>
+          <span>Categorías</span>
+        </a>
+
+        <a href="pedidos.html" class="admin-nav__item is-active">
+          <i class="ph-receipt"></i>
+          <span>Pedidos</span>
+        </a>
+
+        <a href="banners.html" class="admin-nav__item">
+          <i class="ph-images"></i>
+          <span>Banners</span>
+        </a>
+
+        <a href="bsd.html" class="admin-nav__item">
+          <i class="ph-database"></i>
+          <span>BSD</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar__footer">
+        <p>Gestioná pedidos reales de la tienda. Acá Soledad puede ver detalle, cambiar estado y borrar pruebas sin
+          tocar la base manualmente.</p>
+        <button class="btn btn-secondary btn-block" type="button" id="logoutBtn">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar__left">
+          <button class="admin-mobile-toggle" type="button" data-admin-sidebar-toggle aria-label="Abrir navegación">
+            <i class="ph-list"></i>
+          </button>
+          <div>
+            <p class="eyebrow">Operación comercial</p>
+            <h1>Pedidos de Jarama</h1>
+          </div>
+        </div>
+
+        <div class="admin-user-chip">
+          <i class="ph-user-circle"></i>
+          <div>
+            <strong id="adminName">Administrador</strong>
+            <span id="adminEmail">cargando...</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-status-card" id="ordersStatus" hidden></section>
+
+      <section class="admin-grid admin-grid--stats admin-grid--products-mini">
+        <article class="admin-stat-card">
+          <p>Pedidos totales</p>
+          <strong id="statOrdersTotal">—</strong>
+          <span>Órdenes registradas en Supabase</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Pendientes</p>
+          <strong id="statOrdersPending">—</strong>
+          <span>Esperando gestión o pago</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Pagados</p>
+          <strong id="statOrdersPaid">—</strong>
+          <span>Pedidos ya cobrados</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Entregados</p>
+          <strong id="statOrdersDelivered">—</strong>
+          <span>Pedidos finalizados</span>
+        </article>
+      </section>
+
+      <section class="admin-products-layout">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Base real</p>
+              <h2>Listado de pedidos</h2>
+            </div>
+
+            <div class="admin-toolbar">
+              <label class="admin-search-box">
+                <i class="ph-magnifying-glass"></i>
+                <input type="search" id="orderSearch" placeholder="Buscar por código, cliente o mail" />
+              </label>
+
+              <select id="orderStatusFilter" class="admin-filter-select">
+                <option value="all">Todos los estados</option>
+                <option value="pending">Pendiente</option>
+                <option value="paid">Pagado</option>
+                <option value="delivered">Entregado</option>
+                <option value="cancelled">Cancelado</option>
+              </select>
+
+              <button type="button" class="btn btn-secondary" id="clearOrderFiltersBtn">
+                <i class="ph-funnel-x"></i>
+                Limpiar filtros
+              </button>
+
+              <button type="button" class="btn btn-secondary" id="exportOrdersExcelBtn">
+                <i class="ph-download-simple"></i>
+                Exportar Excel
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table admin-products-table">
+              <thead>
+                <tr>
+                  <th>Pedido</th>
+                  <th>Cliente</th>
+                  <th>Estado</th>
+                  <th>Total</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+                <tr>
+                  <td colspan="6">Cargando pedidos…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Detalle</p>
+              <h2>Pedido seleccionado</h2>
+            </div>
+          </div>
+
+          <div id="orderDetail">
+            <p style="color:#7f6d63; line-height:1.7;">Elegí un pedido del listado para ver sus productos, datos del
+              cliente y cambiar el estado.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="../js/admin/orders.js"></script>
+</body>
+
+</html>

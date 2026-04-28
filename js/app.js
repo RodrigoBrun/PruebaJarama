@@ -11,7 +11,11 @@ function readCart() {
 function writeCart(cart) {
   localStorage.setItem("jarama-cart", JSON.stringify(cart));
   updateCartCount();
-  window.dispatchEvent(new CustomEvent("jarama:cart-updated", { detail: { cart } }));
+  window.dispatchEvent(
+    new CustomEvent("jarama:cart-updated", {
+      detail: { cart }
+    })
+  );
 }
 
 function formatUyu(value) {
@@ -23,14 +27,15 @@ function normalizeId(value) {
 }
 
 function getCartCount() {
-  return readCart().reduce((total, item) => total + Number(item.cantidad || 0), 0);
+  return readCart().reduce((total, item) => {
+    return total + Number(item.cantidad || 0);
+  }, 0);
 }
 
 function getCartSubtotal() {
-  return readCart().reduce(
-    (total, item) => total + Number(item.precioUYU || 0) * Number(item.cantidad || 0),
-    0
-  );
+  return readCart().reduce((total, item) => {
+    return total + Number(item.precioUYU || 0) * Number(item.cantidad || 0);
+  }, 0);
 }
 
 function updateCartCount() {
@@ -51,7 +56,11 @@ function addItemToCart(item) {
   if (existingItem) {
     existingItem.cantidad += Number(item.cantidad || 1);
   } else {
-    cart.push({ ...item, id: incomingId, cantidad: Number(item.cantidad || 1) });
+    cart.push({
+      ...item,
+      id: incomingId,
+      cantidad: Number(item.cantidad || 1)
+    });
   }
 
   writeCart(cart);
@@ -62,7 +71,11 @@ function updateItemQuantity(itemId, quantity) {
 
   const cart = readCart().map((item) => {
     if (normalizeId(item.id) !== targetId) return item;
-    return { ...item, cantidad: Math.max(1, Number(quantity || 1)) };
+
+    return {
+      ...item,
+      cantidad: Math.max(1, Number(quantity || 1))
+    };
   });
 
   writeCart(cart);
@@ -89,7 +102,7 @@ function initSearchForms() {
 }
 
 function initCartButtons() {
-  const cartButtons = document.querySelectorAll(".cart-btn, [data-go-cart]");
+  const cartButtons = document.querySelectorAll("[data-go-cart], .cart-btn");
 
   cartButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -99,70 +112,189 @@ function initCartButtons() {
 }
 
 function initMobileDrawer() {
-  const drawer = document.querySelector("[data-mobile-drawer]");
-  const panel = drawer?.querySelector(".mobile-drawer__panel");
-  const openButtons = document.querySelectorAll("[data-mobile-menu-open]");
-  const closeButtons = document.querySelectorAll("[data-mobile-menu-close]");
-  const overlay = drawer?.querySelector(".mobile-drawer__overlay");
-  const drawerLinks = drawer?.querySelectorAll("a") || [];
+  if (window.__jaramaMobileDrawerBound) return;
+  window.__jaramaMobileDrawerBound = true;
 
-  if (!drawer || !openButtons.length || !panel) return;
+  const getDrawer = () => document.querySelector("[data-mobile-drawer]");
 
   const openDrawer = () => {
+    const drawer = getDrawer();
+    if (!drawer) return;
+
     drawer.classList.add("is-open");
     drawer.setAttribute("aria-hidden", "false");
     document.body.classList.add("drawer-open");
   };
 
   const closeDrawer = () => {
+    const drawer = getDrawer();
+    if (!drawer) return;
+
     drawer.classList.remove("is-open");
     drawer.setAttribute("aria-hidden", "true");
     document.body.classList.remove("drawer-open");
   };
 
-  openButtons.forEach((button) => {
-    button.addEventListener("click", (event) => {
+  document.addEventListener("click", (event) => {
+    const openBtn = event.target.closest("[data-mobile-menu-open]");
+    if (openBtn) {
       event.preventDefault();
-      event.stopPropagation();
       openDrawer();
-    });
-  });
+      return;
+    }
 
-  closeButtons.forEach((button) => {
-    button.addEventListener("click", (event) => {
+    const closeBtn = event.target.closest("[data-mobile-menu-close]");
+    if (closeBtn) {
       event.preventDefault();
-      event.stopPropagation();
       closeDrawer();
-    });
-  });
+      return;
+    }
 
-  if (overlay) {
-    overlay.addEventListener("click", closeDrawer);
-  }
+    const submenuToggle = event.target.closest("[data-mobile-submenu-toggle]");
+    if (submenuToggle) {
+      event.preventDefault();
 
-  panel.addEventListener("click", (event) => {
-    event.stopPropagation();
-  });
+      const group = submenuToggle.closest(".mobile-drawer__group");
+      if (!group) return;
 
-  drawerLinks.forEach((link) => {
-    link.addEventListener("click", closeDrawer);
+      const willOpen = !group.classList.contains("is-open");
+      const siblings = group.parentElement?.querySelectorAll(".mobile-drawer__group") || [];
+
+      siblings.forEach((item) => {
+        item.classList.remove("is-open");
+        item.querySelector("[data-mobile-submenu-toggle]")?.setAttribute("aria-expanded", "false");
+      });
+
+      if (willOpen) {
+        group.classList.add("is-open");
+        submenuToggle.setAttribute("aria-expanded", "true");
+      }
+
+      return;
+    }
+
+    const drawer = getDrawer();
+    if (!drawer) return;
+
+    const clickedInsidePanel = event.target.closest(".mobile-drawer__panel");
+    const clickedOverlay = event.target.closest(".mobile-drawer__overlay");
+    const clickedDrawerLink = event.target.closest(".mobile-drawer__single, .mobile-drawer__submenu a");
+
+    if (clickedDrawerLink) {
+      closeDrawer();
+      return;
+    }
+
+    if (clickedOverlay && drawer.classList.contains("is-open")) {
+      closeDrawer();
+      return;
+    }
+
+    if (drawer.classList.contains("is-open") && !clickedInsidePanel && event.target.closest("[data-mobile-drawer]")) {
+      closeDrawer();
+    }
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && drawer.classList.contains("is-open")) {
+    const drawer = getDrawer();
+    if (event.key === "Escape" && drawer?.classList.contains("is-open")) {
       closeDrawer();
     }
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function initDesktopDropdowns() {
+  const navItems = document.querySelectorAll(".main-nav .has-dropdown");
+  if (!navItems.length || window.innerWidth <= 768) return;
+
+  let openItem = null;
+
+  const closeAll = (exceptItem = null) => {
+    navItems.forEach((item) => {
+      if (item === exceptItem) return;
+      item.classList.remove("is-open");
+      item.querySelector(":scope > a")?.setAttribute("aria-expanded", "false");
+    });
+
+    if (!exceptItem) openItem = null;
+  };
+
+  navItems.forEach((item) => {
+    const trigger = item.querySelector(":scope > a");
+    const dropdown = item.querySelector(":scope > .dropdown");
+    let closeTimeout = null;
+
+    const open = () => {
+      clearTimeout(closeTimeout);
+      closeAll(item);
+      item.classList.add("is-open");
+      trigger?.setAttribute("aria-expanded", "true");
+      openItem = item;
+    };
+
+    const close = () => {
+      item.classList.remove("is-open");
+      trigger?.setAttribute("aria-expanded", "false");
+      if (openItem === item) openItem = null;
+    };
+
+    const scheduleClose = () => {
+      clearTimeout(closeTimeout);
+      closeTimeout = setTimeout(close, 140);
+    };
+
+    item.addEventListener("mouseenter", open);
+    item.addEventListener("mouseleave", scheduleClose);
+    dropdown?.addEventListener("mouseenter", () => clearTimeout(closeTimeout));
+    dropdown?.addEventListener("mouseleave", scheduleClose);
+
+    trigger?.setAttribute("aria-expanded", "false");
+    trigger?.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      if (item.classList.contains("is-open")) {
+        close();
+      } else {
+        open();
+      }
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".main-nav")) {
+      closeAll();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeAll();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth <= 768) {
+      closeAll();
+    }
+  });
+}
+
+function initJaramaUi() {
   updateCartCount();
   initSearchForms();
   initCartButtons();
   initMobileDrawer();
-});
+  initDesktopDropdowns();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initJaramaUi);
+} else {
+  initJaramaUi();
+}
 
 window.addEventListener("storage", updateCartCount);
+
 window.JaramaApp = {
   formatUyu,
   getCartItems: readCart,

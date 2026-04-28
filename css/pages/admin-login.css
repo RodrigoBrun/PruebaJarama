@@ -14,10 +14,10 @@
 
 .admin-auth-card {
   width: min(100%, 560px);
-  background: rgba(255,255,255,0.92);
+  background: rgba(255, 255, 255, 0.92);
   border: 1px solid var(--color-border-soft);
   border-radius: 28px;
-  box-shadow: 0 18px 48px rgba(0,0,0,0.08);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
   padding: 34px 30px;
   backdrop-filter: blur(10px);
 }
@@ -51,6 +51,7 @@
   border-radius: 14px;
   border: 1px solid var(--color-border-soft);
   background: #fff;
+  font-size: 16px;
 }
 
 .btn-block {

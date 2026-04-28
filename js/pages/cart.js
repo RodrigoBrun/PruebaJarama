@@ -1,111 +1,92 @@
-const cartList = document.getElementById("cartList");
-const cartSubtotal = document.getElementById("cartSubtotal");
-const cartTotal = document.getElementById("cartTotal");
-const checkoutBtn = document.getElementById("checkoutBtn");
-const clearCartBtn = document.getElementById("clearCartBtn");
-
-function createEmptyState() {
-  const article = document.createElement("article");
-  article.className = "empty-state";
-  article.innerHTML = `
-    <p class="eyebrow">Todavía no hay productos</p>
-    <h2>Tu carrito está vacío</h2>
-    <p>Cuando agregues artículos desde la ficha de producto, aparecerán acá con cantidad, subtotal y controles para editar la compra.</p>
-    <div>
-      <a href="index.html" class="btn btn-primary">Ir al catálogo</a>
-    </div>
-  `;
-  return article;
-}
-
-function createCartItem(item) {
-  const article = document.createElement("article");
-  article.className = "cart-item";
-
-  article.innerHTML = `
-    <div class="cart-item__image">
-      <img src="${item.imagen}" alt="${item.nombre}">
-    </div>
-
-    <div class="cart-item__content">
-      <div class="cart-item__top">
-        <div>
-          <h3 class="cart-item__name">${item.nombre}</h3>
-          <div class="cart-item__meta">
-            <span>Precio unitario: ${window.JaramaApp.formatUyu(item.precioUYU)}</span>
-            <span>ID: ${item.id}</span>
-          </div>
-        </div>
-        <p class="cart-item__line-total">${window.JaramaApp.formatUyu(Number(item.precioUYU) * Number(item.cantidad))}</p>
-      </div>
-
-      <div class="cart-item__actions">
-        <div class="qty-controls">
-          <button class="qty-btn" type="button" data-action="decrease">−</button>
-          <span class="qty-value">${item.cantidad}</span>
-          <button class="qty-btn" type="button" data-action="increase">+</button>
-        </div>
-
-        <button class="remove-btn" type="button">Eliminar producto</button>
-      </div>
-    </div>
-  `;
-
-  article.querySelector('[data-action="decrease"]').addEventListener("click", () => {
-    const nextQuantity = Math.max(1, Number(item.cantidad) - 1);
-    window.JaramaApp.updateItemQuantity(item.id, nextQuantity);
-    renderCart();
-  });
-
-  article.querySelector('[data-action="increase"]').addEventListener("click", () => {
-    const nextQuantity = Number(item.cantidad) + 1;
-    window.JaramaApp.updateItemQuantity(item.id, nextQuantity);
-    renderCart();
-  });
-
-  article.querySelector(".remove-btn").addEventListener("click", () => {
-    window.JaramaApp.removeItemFromCart(item.id);
-    renderCart();
-  });
-
-  return article;
-}
-
-function renderCart() {
-  const cart = window.JaramaApp.getCartItems();
-  cartList.innerHTML = "";
-
-  if (!cart.length) {
-    cartList.appendChild(createEmptyState());
-    cartSubtotal.textContent = window.JaramaApp.formatUyu(0);
-    cartTotal.textContent = window.JaramaApp.formatUyu(0);
-    checkoutBtn.classList.add("is-disabled");
-    checkoutBtn.setAttribute("aria-disabled", "true");
-    checkoutBtn.href = "#";
-    clearCartBtn.hidden = true;
-    return;
-  }
-
-  cart.forEach((item) => {
-    cartList.appendChild(createCartItem(item));
-  });
-
-  const subtotal = window.JaramaApp.getCartSubtotal();
-  cartSubtotal.textContent = window.JaramaApp.formatUyu(subtotal);
-  cartTotal.textContent = window.JaramaApp.formatUyu(subtotal);
-  checkoutBtn.classList.remove("is-disabled");
-  checkoutBtn.removeAttribute("aria-disabled");
-  checkoutBtn.href = "checkout.html";
-  clearCartBtn.hidden = false;
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  renderCart();
+  const cartItemsEl = document.getElementById("cartItems");
+  const subtotalEl = document.getElementById("cartSubtotal");
+  const clearBtn = document.getElementById("cartClearBtn");
+  const checkoutBtn = document.getElementById("cartCheckoutBtn");
 
-  clearCartBtn?.addEventListener("click", () => {
-    window.JaramaApp.clearCart();
-    renderCart();
+  const {
+    getCartItems,
+    getCartSubtotal,
+    updateItemQuantity,
+    removeItemFromCart,
+    clearCart,
+    formatUyu
+  } = window.JaramaApp || {};
+
+  if (!cartItemsEl || !subtotalEl || !getCartItems) return;
+
+  const render = () => {
+    const cart = getCartItems();
+    const subtotal = getCartSubtotal();
+    subtotalEl.textContent = formatUyu ? formatUyu(subtotal) : `$ ${subtotal}`;
+
+    if (!cart.length) {
+      cartItemsEl.innerHTML = `
+        <div class="cart-empty">
+          <p class="eyebrow">Vacío por ahora</p>
+          <h3>Tu carrito todavía no tiene productos</h3>
+          <p>Volvé al catálogo, agregá productos y vas a verlos acá con el mismo diseño nuevo.</p>
+          <a href="index.html" class="btn btn-primary">Ir al catálogo</a>
+        </div>
+      `;
+      checkoutBtn.disabled = true;
+      clearBtn.disabled = true;
+      return;
+    }
+
+    checkoutBtn.disabled = false;
+    clearBtn.disabled = false;
+
+    cartItemsEl.innerHTML = cart.map((item) => `
+      <article class="cart-item" data-id="${item.id}">
+        <div class="cart-item__media">
+          <img src="${item.imagen || 'imagenes/placeholder.jpg'}" alt="${item.nombre}">
+        </div>
+        <div class="cart-item__body">
+          <h3 class="cart-item__title">${item.nombre}</h3>
+          <p class="cart-item__meta">${formatUyu ? formatUyu(item.precioUYU) : `$ ${item.precioUYU}`} por unidad</p>
+        </div>
+        <div class="cart-item__actions">
+          <div class="cart-qty">
+            <button type="button" data-action="minus">−</button>
+            <span>${item.cantidad}</span>
+            <button type="button" data-action="plus">+</button>
+          </div>
+          <button type="button" class="cart-remove" data-action="remove"><i class="ph-trash"></i>Quitar</button>
+        </div>
+      </article>
+    `).join("");
+  };
+
+  cartItemsEl.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const item = button.closest(".cart-item");
+    const id = item?.dataset.id;
+    if (!id) return;
+
+    const cart = getCartItems();
+    const current = cart.find((entry) => String(entry.id) === String(id));
+    if (!current) return;
+
+    const action = button.dataset.action;
+    if (action === "plus") updateItemQuantity(id, Number(current.cantidad || 1) + 1);
+    if (action === "minus") updateItemQuantity(id, Math.max(1, Number(current.cantidad || 1) - 1));
+    if (action === "remove") removeItemFromCart(id);
+
+    render();
   });
 
-  window.addEventListener("jarama:cart-updated", renderCart);
+  clearBtn?.addEventListener("click", () => {
+    clearCart?.();
+    render();
+  });
+
+  checkoutBtn?.addEventListener("click", () => {
+    window.location.href = "checkout.html";
+  });
+
+  window.addEventListener("jarama:cart-updated", render);
+  render();
 });

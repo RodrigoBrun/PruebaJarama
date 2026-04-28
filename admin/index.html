@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Jarama Admin — Dashboard</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
   <script src="https://unpkg.com/phosphor-icons"></script>
 
   <link rel="stylesheet" href="../css/base.css" />
@@ -13,44 +16,70 @@
   <link rel="stylesheet" href="../css/components.css" />
   <link rel="stylesheet" href="../css/pages/admin-dashboard.css" />
 </head>
+
 <body class="admin-body">
   <div class="admin-shell">
-    <aside class="admin-sidebar">
-      <a href="index.html" class="admin-brand">
-        <span class="logo-title">JARAMA</span>
-        <span class="logo-subtitle">Panel privado</span>
-      </a>
+    <div class="admin-shell__overlay" data-admin-overlay data-admin-sidebar-close></div>
+
+    <aside class="admin-sidebar" data-admin-sidebar>
+      <div class="admin-sidebar__head">
+        <a href="index.html" class="admin-brand">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Panel privado</span>
+        </a>
+        <button class="admin-sidebar__close" type="button" data-admin-sidebar-close aria-label="Cerrar menú">
+          <i class="ph-x"></i>
+        </button>
+      </div>
 
       <nav class="admin-nav" aria-label="Navegación del panel">
         <a href="index.html" class="admin-nav__item is-active">
           <i class="ph-squares-four"></i>
-          Dashboard
+          <span>Dashboard</span>
         </a>
+
         <a href="productos.html" class="admin-nav__item">
           <i class="ph-armchair"></i>
-          Productos
+          <span>Productos</span>
         </a>
-        <button class="admin-nav__item admin-nav__item--muted" type="button" disabled>
+
+        <a href="categorias.html" class="admin-nav__item">
+          <i class="ph-tree-structure"></i>
+          <span>Categorías</span>
+        </a>
+
+        <a href="pedidos.html" class="admin-nav__item">
           <i class="ph-receipt"></i>
-          Pedidos <span>Próx.</span>
-        </button>
-        <button class="admin-nav__item admin-nav__item--muted" type="button" disabled>
-          <i class="ph-tag"></i>
-          Promos <span>Próx.</span>
-        </button>
+          <span>Pedidos</span>
+        </a>
+
+        <a href="banners.html" class="admin-nav__item">
+          <i class="ph-images"></i>
+          <span>Banners</span>
+        </a>
+
+        <a href="bsd.html" class="admin-nav__item">
+          <i class="ph-database"></i>
+          <span>BSD</span>
+        </a>
       </nav>
 
       <div class="admin-sidebar__footer">
-        <p>Ruta privada no enlazada desde la tienda pública.</p>
+        <p>Panel privado para Soledad. Lo que se cambie acá impacta en la tienda pública real.</p>
         <button class="btn btn-secondary btn-block" type="button" id="logoutBtn">Cerrar sesión</button>
       </div>
     </aside>
 
     <main class="admin-main">
       <header class="admin-topbar">
-        <div>
-          <p class="eyebrow">Acceso seguro</p>
-          <h1>Bienvenida al panel administrativo</h1>
+        <div class="admin-topbar__left">
+          <button class="admin-mobile-toggle" type="button" data-admin-sidebar-toggle aria-label="Abrir navegación">
+            <i class="ph-list"></i>
+          </button>
+          <div>
+            <p class="eyebrow">Acceso seguro</p>
+            <h1>Bienvenida al panel administrativo</h1>
+          </div>
         </div>
 
         <div class="admin-user-chip">
@@ -70,19 +99,16 @@
           <strong id="statProducts">—</strong>
           <span>Contados desde la base de datos</span>
         </article>
-
         <article class="admin-stat-card">
           <p>Con stock</p>
           <strong id="statStock">—</strong>
           <span>Piezas disponibles para vender</span>
         </article>
-
         <article class="admin-stat-card">
           <p>Pedidos totales</p>
           <strong id="statOrders">—</strong>
           <span>Pedidos guardados en Supabase</span>
         </article>
-
         <article class="admin-stat-card">
           <p>Pedidos pendientes</p>
           <strong id="statPending">—</strong>
@@ -117,11 +143,15 @@
           <div class="analytics-bars" id="analyticsBars">
             <div class="analytics-bar">
               <div class="analytics-bar__meta"><span>Mes actual</span><strong>$ 0</strong></div>
-              <div class="analytics-bar__track"><div class="analytics-bar__fill" style="width: 0%"></div></div>
+              <div class="analytics-bar__track">
+                <div class="analytics-bar__fill" style="width: 0%"></div>
+              </div>
             </div>
             <div class="analytics-bar">
               <div class="analytics-bar__meta"><span>Mes anterior</span><strong>$ 0</strong></div>
-              <div class="analytics-bar__track"><div class="analytics-bar__fill" style="width: 0%"></div></div>
+              <div class="analytics-bar__track">
+                <div class="analytics-bar__fill" style="width: 0%"></div>
+              </div>
             </div>
           </div>
 
@@ -142,17 +172,15 @@
               <strong id="bestSellerName">Sin datos todavía</strong>
               <span id="bestSellerMeta">Esperando pedidos reales.</span>
             </article>
-
             <article class="analytics-trend-card">
               <p>Menos vendido</p>
               <strong id="worstSellerName">Sin datos todavía</strong>
               <span id="worstSellerMeta">Aparecerá cuando exista más de un producto vendido.</span>
             </article>
-
             <article class="analytics-trend-card">
               <p>Cierre de caja diario</p>
-              <strong>Próxima etapa</strong>
-              <span>Lo dejamos preparado visualmente para no mezclar lógica financiera sensible todavía.</span>
+              <strong id="cashClosingTotal">$ 0</strong>
+              <span id="cashClosingMeta">0 pedidos cobrados hoy · Ticket promedio $ 0</span>
             </article>
           </div>
         </article>
@@ -207,4 +235,5 @@
 
   <script type="module" src="../js/admin/dashboard.js"></script>
 </body>
+
 </html>

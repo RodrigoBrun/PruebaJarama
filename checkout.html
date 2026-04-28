@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Jarama – Checkout invitado</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -24,31 +24,8 @@
     </a>
   </div>
 
-  <div class="mobile-drawer" data-mobile-drawer aria-hidden="true">
-    <button class="mobile-drawer__overlay" type="button" data-mobile-menu-close aria-label="Cerrar menú"></button>
-    <aside class="mobile-drawer__panel">
-      <div class="mobile-drawer__top">
-        <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
-          <span class="logo-title">JARAMA</span>
-          <span class="logo-subtitle">Home &amp; Deco</span>
-        </a>
-        <button class="mobile-drawer__close" type="button" data-mobile-menu-close aria-label="Cerrar menú">
-          <i class="ph-x"></i>
-        </button>
-      </div>
-      <nav class="mobile-drawer__nav" aria-label="Menú móvil">
-        <a href="index.html">Inicio</a>
-        <a href="#">Muebles</a>
-        <a href="#">Sillones y Butacas</a>
-        <a href="#">Deco</a>
-        <a href="#">Accesorios</a>
-        <a href="carrito.html">Carrito</a>
-      </nav>
-      <div class="mobile-drawer__footer">
-        Menú rápido para celular. Podés abrir el carrito desde el botón flotante en cualquier momento.
-      </div>
-    </aside>
-  </div>
+  <div class="mobile-drawer" data-mobile-drawer aria-hidden="true" data-site-mobile-drawer></div>
+
   <header class="top-header">
     <div class="container-wide top-header__inner">
       <button class="icon-btn info-btn" aria-label="Información" data-open-info type="button">
@@ -76,14 +53,7 @@
     </div>
   </header>
 
-  <nav class="main-nav" aria-label="Navegación principal">
-    <div class="container-wide">
-      <ul class="nav-list">
-        <li class="nav-item"><a href="index.html">Catálogo</a></li>
-        <li class="nav-item"><a href="carrito.html">Carrito</a></li>
-      </ul>
-    </div>
-  </nav>
+  <nav class="main-nav" aria-label="Navegación principal" data-site-main-nav></nav>
 
   <main class="page-main checkout-page">
     <section class="section-spacing">
@@ -240,6 +210,19 @@
     </div>
   </div>
 
+
+<section class="brand-banners" data-site-banners hidden>
+  <div class="container-wide">
+    <div class="brand-banners__head">
+      <p class="eyebrow">Marcas y aliados</p>
+      <h2>Banners destacados</h2>
+    </div>
+
+    <div class="brand-banners__grid" data-site-banners-grid></div>
+  </div>
+</section>
+
+
   <section class="payments">
     <div class="container-wide">
       <button class="btn btn-secondary btn-locations" type="button">VER LOCALES Y HORARIOS</button>
@@ -290,8 +273,11 @@
     </div>
   </footer>
 
-  <script src="js/components/header.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/pages/checkout.js"></script>
+
+  <script type="module" src="js/components/site-navigation.js"></script>
+<script type="module" src="js/components/site-banners.js"></script>
+<script src="js/app.js"></script>
+<script type="module" src="js/pages/home.js"></script>
+<script type="module" src="js/pages/checkout.js"></script>
 </body>
 </html>

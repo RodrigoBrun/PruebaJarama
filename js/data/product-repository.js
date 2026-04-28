@@ -23,6 +23,15 @@ function getPublicClient() {
   return publicClient;
 }
 
+function slugify(value = "") {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function placeholderSvg(label = "Jarama") {
   const safeLabel = String(label || "Jarama")
     .replace(/&/g, "&amp;")
@@ -73,6 +82,8 @@ function mapSupabaseProduct(record) {
     slug: record?.slug || "",
     nombre: name,
     categoria: record?.category || "General",
+    categoriaSlug: record?.category_slug || slugify(record?.category || "general"),
+    subcategoriaSlug: record?.subcategory_slug || "",
     codigo: record?.code || "SIN-COD",
     precioUYU: Number(record?.price_uyu || 0),
     stock: Boolean(record?.in_stock),
@@ -93,6 +104,8 @@ function mapSupabaseProduct(record) {
 function mapLocalProduct(product) {
   return {
     ...product,
+    categoriaSlug: product.categoriaSlug || slugify(product.categoria || "general"),
+    subcategoriaSlug: product.subcategoriaSlug || "",
     imagenes: Array.isArray(product.imagenes) && product.imagenes.length
       ? product.imagenes
       : [placeholderSvg(product.nombre)],
@@ -114,6 +127,8 @@ export function toSupabasePayload(product) {
     slug: product.slug,
     name: product.nombre || product.name,
     category: product.categoria || product.category || null,
+    category_slug: product.categoriaSlug || product.categorySlug || slugify(product.categoria || product.category || ""),
+    subcategory_slug: product.subcategoriaSlug || product.subcategorySlug || null,
     code: product.codigo || product.code || null,
     price_uyu: Number(product.precioUYU ?? product.price_uyu ?? 0),
     in_stock: Boolean(product.stock ?? product.in_stock),
@@ -162,18 +177,20 @@ export async function getAllProducts({ featuredOnly = false, includeOutOfStock =
       if (!error && Array.isArray(data) && !data.length) {
         const fallback = localProducts.map(mapLocalProduct);
         return sortProducts(
-          fallback.filter((product) => (featuredOnly ? product.destacado : true))
+          fallback
+            .filter((product) => (featuredOnly ? product.destacado : true))
             .filter((product) => (includeOutOfStock ? true : product.stock))
         );
       }
     } catch {
-      // silent fallback
+      // fallback silencioso
     }
   }
 
   const fallback = localProducts.map(mapLocalProduct);
   return sortProducts(
-    fallback.filter((product) => (featuredOnly ? product.destacado : true))
+    fallback
+      .filter((product) => (featuredOnly ? product.destacado : true))
       .filter((product) => (includeOutOfStock ? true : product.stock))
   );
 }
@@ -192,7 +209,7 @@ export async function getProductBySlug(slug) {
 
       if (!error && data) return mapSupabaseProduct(data);
     } catch {
-      // silent fallback
+      // fallback silencioso
     }
   }
 
@@ -203,13 +220,15 @@ export async function getProductBySlug(slug) {
 export async function getRelatedProducts(product, limit = 3) {
   if (!product) return [];
 
+  const categorySlug = product.categoriaSlug || product.categorySlug || slugify(product.categoria || product.category || "");
+
   const client = getPublicClient();
-  if (client) {
+  if (client && categorySlug) {
     try {
       const { data, error } = await client
         .from("products")
         .select("*")
-        .eq("category", product.categoria)
+        .eq("category_slug", categorySlug)
         .neq("slug", product.slug)
         .limit(limit);
 
@@ -217,7 +236,7 @@ export async function getRelatedProducts(product, limit = 3) {
         return data.map(mapSupabaseProduct);
       }
     } catch {
-      // silent fallback
+      // fallback silencioso
     }
   }
 

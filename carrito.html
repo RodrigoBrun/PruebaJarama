@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Jarama – Carrito</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -24,50 +24,22 @@
     </a>
   </div>
 
-  <div class="mobile-drawer" data-mobile-drawer aria-hidden="true">
-    <button class="mobile-drawer__overlay" type="button" data-mobile-menu-close aria-label="Cerrar menú"></button>
-    <aside class="mobile-drawer__panel">
-      <div class="mobile-drawer__top">
-        <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
-          <span class="logo-title">JARAMA</span>
-          <span class="logo-subtitle">Home &amp; Deco</span>
-        </a>
-        <button class="mobile-drawer__close" type="button" data-mobile-menu-close aria-label="Cerrar menú">
-          <i class="ph-x"></i>
-        </button>
-      </div>
-      <nav class="mobile-drawer__nav" aria-label="Menú móvil">
-        <a href="index.html">Inicio</a>
-        <a href="#">Muebles</a>
-        <a href="#">Sillones y Butacas</a>
-        <a href="#">Deco</a>
-        <a href="#">Accesorios</a>
-        <a href="carrito.html">Carrito</a>
-      </nav>
-      <div class="mobile-drawer__footer">
-        Menú rápido para celular. Podés abrir el carrito desde el botón flotante en cualquier momento.
-      </div>
-    </aside>
-  </div>
+  <div class="mobile-drawer" data-mobile-drawer aria-hidden="true" data-site-mobile-drawer></div>
+
   <header class="top-header">
     <div class="container-wide top-header__inner">
-      <button class="icon-btn info-btn" aria-label="Información" data-open-info type="button">
+      <button class="icon-btn info-btn" aria-label="Información" type="button">
         <i class="ph-info"></i>
       </button>
-
       <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
         <span class="logo-title">JARAMA</span>
         <span class="logo-subtitle">Home &amp; Deco</span>
       </a>
-
       <div class="header-right">
         <form class="search-form" role="search" data-search-form>
           <input type="search" placeholder="Buscar" aria-label="Buscar productos" />
-          <button type="submit" aria-label="Buscar">
-            <i class="ph-magnifying-glass"></i>
-          </button>
+          <button type="submit" aria-label="Buscar"><i class="ph-magnifying-glass"></i></button>
         </form>
-
         <button class="icon-btn cart-btn" aria-label="Ver carrito" type="button" data-go-cart>
           <i class="ph-shopping-cart-simple"></i>
           <span class="cart-count" data-cart-count>0</span>
@@ -76,72 +48,55 @@
     </div>
   </header>
 
-  <nav class="main-nav" aria-label="Navegación principal">
+  <nav class="main-nav" aria-label="Navegación principal" data-site-main-nav></nav>
+
+  <section class="category-header">
     <div class="container-wide">
-      <ul class="nav-list">
-        <li class="nav-item"><a href="index.html">Volver al catálogo</a></li>
-        <li class="nav-item"><a href="checkout.html">Checkout invitado</a></li>
-      </ul>
+      <div class="collection-pill-row" aria-label="Tu carrito">
+        <span class="collection-pill__dot" aria-hidden="true"></span>
+        <span class="collection-pill__text">TU CARRITO</span>
+        <span class="collection-pill__dot" aria-hidden="true"></span>
+      </div>
     </div>
-  </nav>
+  </section>
 
   <main class="page-main cart-page">
     <section class="section-spacing">
-      <div class="container-wide">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">Compra invitado</p>
-            <h1>Tu carrito</h1>
+      <div class="container-wide cart-layout">
+        <article class="cart-panel">
+          <div class="section-heading section-heading--centerless">
+            <div>
+              <p class="eyebrow">Resumen</p>
+              <h1>Productos seleccionados</h1>
+            </div>
           </div>
-          <p class="section-copy">Acá el cliente puede revisar su compra sin necesidad de registrarse. Base lista para luego conectar stock real y Mercado Pago.</p>
-        </div>
-
-        <div class="cart-layout" id="cartLayout">
-          <div class="cart-list" id="cartList"></div>
-
-          <aside class="cart-summary" id="cartSummary">
-            <h2>Resumen</h2>
-            <div class="summary-row">
-              <span>Subtotal</span>
-              <strong id="cartSubtotal">$ 0</strong>
-            </div>
-            <div class="summary-row muted">
-              <span>Envío</span>
-              <span>A coordinar</span>
-            </div>
-            <div class="summary-row total-row">
-              <span>Total estimado</span>
-              <strong id="cartTotal">$ 0</strong>
-            </div>
-
-            <div class="summary-actions">
-              <a href="checkout.html" class="btn btn-primary" id="checkoutBtn">Continuar al checkout</a>
-              <a href="index.html" class="btn btn-secondary">Seguir comprando</a>
-              <button type="button" class="summary-link-btn" id="clearCartBtn">Vaciar carrito</button>
-            </div>
-          </aside>
-        </div>
+          <div id="cartItems" class="cart-items"></div>
+        </article>
+        <aside class="cart-summary">
+          <p class="eyebrow">Compra actual</p>
+          <h2>Total estimado</h2>
+          <strong id="cartSubtotal">$ 0</strong>
+          <p>Podés seguir agregando productos o avanzar a la siguiente etapa de checkout cuando la conectemos.</p>
+          <button class="btn btn-primary btn-block" type="button" id="cartCheckoutBtn">Continuar compra</button>
+          <button class="btn btn-secondary btn-block" type="button" id="cartClearBtn">Vaciar carrito</button>
+        </aside>
       </div>
     </section>
   </main>
 
-  <div class="info-modal" data-info-modal aria-hidden="true">
-    <div class="info-modal__overlay" data-close-info></div>
-    <div class="info-modal__content">
-      <button class="info-modal__close" aria-label="Cerrar información" data-close-info type="button">&times;</button>
-      <h2 class="info-modal__title">Información de Jarama</h2>
-      <div class="info-modal__body">
-        <section>
-          <h3>Compra sin cuenta</h3>
-          <p>El cliente avanza como invitado. Más simple, más directo y mejor para una tienda enfocada en convertir sin fricción.</p>
-        </section>
-        <section>
-          <h3>Estado actual</h3>
-          <p>Este carrito ya funciona en frontend y queda listo para conectarlo después a base de datos, órdenes y pagos reales.</p>
-        </section>
-      </div>
+
+<section class="brand-banners" data-site-banners hidden>
+  <div class="container-wide">
+    <div class="brand-banners__head">
+      <p class="eyebrow">Marcas y aliados</p>
+      <h2>Banners destacados</h2>
     </div>
+
+    <div class="brand-banners__grid" data-site-banners-grid></div>
   </div>
+</section>
+
+
 
   <section class="payments">
     <div class="container-wide">
@@ -165,7 +120,6 @@
           <span class="logo-subtitle">Home &amp; Deco</span>
         </a>
       </div>
-
       <div class="footer-columns">
         <div class="footer-column">
           <h3>Tiendas</h3>
@@ -194,8 +148,12 @@
     </div>
   </footer>
 
-  <script src="js/components/header.js"></script>
+
+  <script type="module" src="js/components/site-navigation.js"></script>
+<script type="module" src="js/components/site-banners.js"></script>
+<script src="js/app.js"></script>
+  <script type="module" src="js/components/site-navigation.js"></script>
   <script src="js/app.js"></script>
-  <script src="js/pages/cart.js"></script>
+  <script type="module" src="js/pages/cart.js"></script>
 </body>
 </html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Jarama Admin — Categorías</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages/admin-dashboard.css" />
+  <link rel="stylesheet" href="../css/pages/admin-products.css" />
+</head>
+
+<body class="admin-body">
+  <div class="admin-shell">
+    <div class="admin-shell__overlay" data-admin-overlay data-admin-sidebar-close></div>
+
+    <aside class="admin-sidebar" data-admin-sidebar>
+      <div class="admin-sidebar__head">
+        <a href="index.html" class="admin-brand">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Panel privado</span>
+        </a>
+        <button class="admin-sidebar__close" type="button" data-admin-sidebar-close aria-label="Cerrar menú">
+          <i class="ph-x"></i>
+        </button>
+      </div>
+
+      <nav class="admin-nav" aria-label="Navegación del panel">
+        <a href="index.html" class="admin-nav__item">
+          <i class="ph-squares-four"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="productos.html" class="admin-nav__item">
+          <i class="ph-armchair"></i>
+          <span>Productos</span>
+        </a>
+
+        <a href="categorias.html" class="admin-nav__item is-active">
+          <i class="ph-tree-structure"></i>
+          <span>Categorías</span>
+        </a>
+
+        <a href="pedidos.html" class="admin-nav__item">
+          <i class="ph-receipt"></i>
+          <span>Pedidos</span>
+        </a>
+
+        <a href="banners.html" class="admin-nav__item">
+          <i class="ph-images"></i>
+          <span>Banners</span>
+        </a>
+
+        <a href="bsd.html" class="admin-nav__item">
+          <i class="ph-database"></i>
+          <span>BSD</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar__footer">
+        <p>Organizá el menú de Jarama sin tocar código. Las categorías nuevas se agregan al final y, si querés, después
+          podés editar su posición.</p>
+        <button class="btn btn-secondary btn-block" type="button" id="logoutBtn">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar__left">
+          <button class="admin-mobile-toggle" type="button" data-admin-sidebar-toggle aria-label="Abrir navegación">
+            <i class="ph-list"></i>
+          </button>
+          <div>
+            <p class="eyebrow">Estructura comercial</p>
+            <h1>Categorías y subcategorías</h1>
+          </div>
+        </div>
+
+        <div class="admin-user-chip">
+          <i class="ph-user-circle"></i>
+          <div>
+            <strong id="adminName">Administrador</strong>
+            <span id="adminEmail">cargando...</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-status-card" id="categoriesStatus" hidden></section>
+
+      <section class="admin-grid admin-grid--stats admin-grid--products-mini">
+        <article class="admin-stat-card">
+          <p>Categorías raíz</p>
+          <strong id="statRootCategories">—</strong>
+          <span>Niveles principales visibles en navegación</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Subcategorías</p>
+          <strong id="statChildCategories">—</strong>
+          <span>Entradas hijas ordenadas por jerarquía</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Visibles en nav</p>
+          <strong id="statVisibleInNav">—</strong>
+          <span>Ítems habilitados para navbar y drawer</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Activas</p>
+          <strong id="statActiveCategories">—</strong>
+          <span>Estructuras actualmente disponibles</span>
+        </article>
+      </section>
+
+      <section class="admin-products-layout">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Formulario</p>
+              <h2 id="categoryFormTitle">Nueva categoría</h2>
+            </div>
+
+            <div class="admin-toolbar">
+              <button type="button" class="btn btn-secondary" id="resetCategoryFormBtn">
+                <i class="ph-arrow-counter-clockwise"></i>
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <form class="admin-product-form" id="categoryForm">
+            <input type="hidden" id="categoryId" />
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Nombre *
+                <input type="text" id="categoryName" placeholder="Ej: Muebles" required />
+              </label>
+
+              <label>
+                Slug *
+                <input type="text" id="categorySlug" placeholder="Ej: muebles" required />
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Tipo
+                <select id="categoryLevel">
+                  <option value="root">Categoría principal</option>
+                  <option value="child">Subcategoría</option>
+                </select>
+              </label>
+
+              <label>
+                Categoría padre
+                <select id="categoryParent">
+                  <option value="">Sin padre</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Ícono
+                <select id="categoryIconKey">
+                  <option value="ph-door">Puerta / muebles</option>
+                  <option value="ph-armchair">Sillón</option>
+                  <option value="ph-lamp">Lámpara / deco</option>
+                  <option value="ph-bag">Bolso / accesorios</option>
+                  <option value="ph-house-line">Casa</option>
+                  <option value="ph-squares-four">Grilla</option>
+                  <option value="svg-religioso">Religioso (ícono especial)</option>
+                </select>
+              </label>
+
+              <label>
+                Descripción
+                <input type="text" id="categoryDescription" placeholder="Texto interno opcional para contexto." />
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--two" id="categoryPositionWrap" hidden>
+              <label>
+                Posición
+                <select id="categoryPositionSelect">
+                  <option value="1">1</option>
+                </select>
+              </label>
+
+              <div style="display:grid; align-content:end;">
+                <p style="margin:0; font-size:14px; color:#7f6d63; line-height:1.7;">
+                  Elegí en qué lugar querés mostrar esta categoría dentro de su sección.
+                </p>
+              </div>
+            </div>
+
+            <div class="admin-form-switches admin-form-switches--badges">
+              <span class="admin-field-label">Visibilidad</span>
+
+              <label class="admin-switch">
+                <input type="checkbox" id="categoryIsActive" checked />
+                <span>Activa</span>
+              </label>
+
+              <label class="admin-switch">
+                <input type="checkbox" id="categoryShowInNav" checked />
+                <span>Mostrar en navegación</span>
+              </label>
+
+              <label class="admin-switch">
+                <input type="checkbox" id="categoryShowInHome" checked />
+                <span>Mostrar en home</span>
+              </label>
+            </div>
+
+            <div class="admin-form-actions">
+              <button class="btn btn-primary" type="submit" id="saveCategoryBtn">
+                <i class="ph-floppy-disk"></i>
+                Guardar categoría
+              </button>
+            </div>
+          </form>
+        </article>
+
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Listado</p>
+              <h2>Estructura actual</h2>
+            </div>
+
+            <div class="admin-toolbar">
+              <label class="admin-search-box">
+                <i class="ph-magnifying-glass"></i>
+                <input type="search" id="categorySearch" placeholder="Buscar por nombre, slug o ícono" />
+              </label>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table admin-products-table">
+              <thead>
+                <tr>
+                  <th>Estructura</th>
+                  <th>Ícono</th>
+                  <th>Posición actual</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="categoriesTableBody">
+                <tr>
+                  <td colspan="5">Cargando categorías…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="admin-grid" style="margin-top: 18px;">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Vista rápida</p>
+              <h2>Jerarquía actual</h2>
+            </div>
+          </div>
+
+          <div id="categoriesTreePreview">
+            <p>Cargando estructura…</p>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="../js/admin/categories.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Jarama Admin — BSD</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages/admin-dashboard.css" />
+  <link rel="stylesheet" href="../css/pages/admin-products.css" />
+</head>
+<body class="admin-body">
+  <div class="admin-shell">
+    <div class="admin-shell__overlay" data-admin-overlay data-admin-sidebar-close></div>
+
+    <aside class="admin-sidebar" data-admin-sidebar>
+      <div class="admin-sidebar__head">
+        <a href="index.html" class="admin-brand">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Panel privado</span>
+        </a>
+        <button class="admin-sidebar__close" type="button" data-admin-sidebar-close aria-label="Cerrar menú">
+          <i class="ph-x"></i>
+        </button>
+      </div>
+
+      <nav class="admin-nav" aria-label="Navegación del panel">
+        <a href="index.html" class="admin-nav__item">
+          <i class="ph-squares-four"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="productos.html" class="admin-nav__item">
+          <i class="ph-armchair"></i>
+          <span>Productos</span>
+        </a>
+
+        <a href="categorias.html" class="admin-nav__item">
+          <i class="ph-tree-structure"></i>
+          <span>Categorías</span>
+        </a>
+
+        <a href="pedidos.html" class="admin-nav__item">
+          <i class="ph-receipt"></i>
+          <span>Pedidos</span>
+        </a>
+
+        <a href="banners.html" class="admin-nav__item">
+          <i class="ph-images"></i>
+          <span>Banners</span>
+        </a>
+
+        <a href="bsd.html" class="admin-nav__item is-active">
+          <i class="ph-database"></i>
+          <span>BSD</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar__footer">
+        <p>Base, storage y depuración. Acá controlás espacio, archivos, huérfanas y limpieza técnica sin tocar Supabase a mano.</p>
+        <button class="btn btn-secondary btn-block" type="button" id="logoutBtn">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar__left">
+          <button class="admin-mobile-toggle" type="button" data-admin-sidebar-toggle aria-label="Abrir navegación">
+            <i class="ph-list"></i>
+          </button>
+          <div>
+            <p class="eyebrow">Base, storage y depuración</p>
+            <h1>BSD de Jarama</h1>
+          </div>
+        </div>
+
+        <div class="admin-user-chip">
+          <i class="ph-user-circle"></i>
+          <div>
+            <strong id="adminName">Administrador</strong>
+            <span id="adminEmail">cargando...</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-status-card" id="bsdStatus" hidden></section>
+
+      <section class="admin-grid admin-grid--stats bsd-stats">
+        <article class="admin-stat-card">
+          <p>Storage usado</p>
+          <strong id="bsdStorageUsed">—</strong>
+          <span>Total detectado dentro del bucket</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Archivos</p>
+          <strong id="bsdFilesCount">—</strong>
+          <span>Objetos encontrados en storage</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Huérfanas</p>
+          <strong id="bsdOrphanCount">—</strong>
+          <span>Archivos sin uso en producto o banner</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Productos</p>
+          <strong id="bsdProductsCount">—</strong>
+          <span>Total de registros en base</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Pedidos</p>
+          <strong id="bsdOrdersCount">—</strong>
+          <span>Órdenes registradas en base</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Banners</p>
+          <strong id="bsdBannersCount">—</strong>
+          <span>Banners detectados en base</span>
+        </article>
+      </section>
+
+      <section class="admin-grid bsd-top-grid">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Resumen general</p>
+              <h2>Estado técnico</h2>
+            </div>
+          </div>
+
+          <div class="bsd-overview-grid">
+            <div class="bsd-overview-item">
+              <span>Bucket principal</span>
+              <strong>site-assets</strong>
+            </div>
+
+            <div class="bsd-overview-item">
+              <span>Categorías en base</span>
+              <strong id="bsdCategoriesCount">—</strong>
+            </div>
+
+            <div class="bsd-overview-item">
+              <span>Productos sin imagen</span>
+              <strong id="bsdProductsWithoutImage">—</strong>
+            </div>
+
+            <div class="bsd-overview-item">
+              <span>Productos sin categoría</span>
+              <strong id="bsdProductsWithoutCategory">—</strong>
+            </div>
+
+            <div class="bsd-overview-item">
+              <span>Banners sin imagen</span>
+              <strong id="bsdBannersWithoutImage">—</strong>
+            </div>
+
+            <div class="bsd-overview-item">
+              <span>Banners sin link</span>
+              <strong id="bsdBannersWithoutLink">—</strong>
+            </div>
+          </div>
+
+          <div class="bsd-actions-row">
+            <button class="btn btn-secondary" type="button" id="bsdRefreshBtn">
+              <i class="ph-arrows-clockwise"></i>
+              Refrescar
+            </button>
+
+            <button class="btn btn-primary" type="button" id="bsdDeleteOrphansBtn">
+              <i class="ph-trash"></i>
+              Eliminar huérfanas
+            </button>
+          </div>
+
+          <p class="bsd-inline-note">
+            BSD no borra productos ni banners. Solo te ayuda a detectar archivos, espacio ocupado y limpieza real del bucket.
+          </p>
+        </article>
+
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Salud del sistema</p>
+              <h2>Observaciones rápidas</h2>
+            </div>
+          </div>
+
+          <div id="bsdHealthList" class="bsd-health-list">
+            <p>Cargando chequeos…</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="admin-grid" style="margin-top:18px;">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Storage real</p>
+              <h2>Archivos del bucket</h2>
+            </div>
+
+            <div class="admin-toolbar bsd-toolbar">
+              <label class="admin-search-box">
+                <i class="ph-magnifying-glass"></i>
+                <input type="search" id="bsdSearch" placeholder="Buscar por archivo, carpeta, producto o banner" />
+              </label>
+
+              <select id="bsdUsageFilter" class="admin-filter-select" aria-label="Filtrar por uso">
+                <option value="all">Todos los archivos</option>
+                <option value="used">Solo en uso</option>
+                <option value="orphan">Solo huérfanas</option>
+              </select>
+
+              <select id="bsdFolderFilter" class="admin-filter-select" aria-label="Filtrar por carpeta">
+                <option value="all">Todas las carpetas</option>
+                <option value="products">Products</option>
+                <option value="banners">Banners</option>
+                <option value="other">Otras</option>
+              </select>
+
+              <button type="button" class="btn btn-secondary" id="bsdClearFiltersBtn">
+                <i class="ph-funnel-x"></i>
+                Limpiar filtros
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table admin-products-table bsd-table">
+              <thead>
+                <tr>
+                  <th>Preview</th>
+                  <th>Archivo</th>
+                  <th>Peso</th>
+                  <th>Uso</th>
+                  <th>Actualizado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="bsdTableBody">
+                <tr>
+                  <td colspan="6">Cargando archivos…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="admin-confirm" id="bsdConfirmModal" hidden>
+    <div class="admin-confirm__overlay" data-bsd-confirm-close></div>
+    <div class="admin-confirm__dialog" role="dialog" aria-modal="true" aria-labelledby="bsdConfirmTitle">
+      <button type="button" class="admin-confirm__close" data-bsd-confirm-close aria-label="Cerrar">
+        <i class="ph-x"></i>
+      </button>
+
+      <div class="admin-confirm__content">
+        <p class="eyebrow">Confirmación</p>
+        <h2 id="bsdConfirmTitle">Confirmar acción</h2>
+        <p id="bsdConfirmMessage">¿Querés continuar?</p>
+
+        <div class="admin-confirm__actions">
+          <button type="button" class="btn btn-secondary" id="bsdConfirmCancelBtn">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="bsdConfirmAcceptBtn">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../js/admin/bsd.js"></script>
+</body>
+</html>

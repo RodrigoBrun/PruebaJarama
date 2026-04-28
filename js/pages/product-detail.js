@@ -3,15 +3,6 @@ import { getProductBySlug, getRelatedProducts } from "../data/product-repository
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get("slug");
-let currentProduct = null;
-
-const badgeMap = {
-  destacado: { label: "Destacado", className: "is-dark" },
-  nuevo: { label: "Nuevo", className: "is-green" },
-  "mas-vendido": { label: "Más vendido", className: "is-gold" },
-  oferta: { label: "Oferta", className: "is-red" },
-  "edicion-limitada": { label: "Edición limitada", className: "" }
-};
 
 const dom = {
   productStatus: document.getElementById("productStatus"),
@@ -20,117 +11,176 @@ const dom = {
   productCode: document.getElementById("productCode"),
   productMeasures: document.getElementById("productMeasures"),
   productMaterial: document.getElementById("productMaterial"),
-  productColorsBlock: document.getElementById("productColorsBlock"),
-  productColors: document.getElementById("productColors"),
   productDescription: document.getElementById("productDescription"),
   productPrice: document.getElementById("productPrice"),
-  mainProductImage: document.getElementById("mainProductImage"),
+  productColorsBlock: document.getElementById("productColorsBlock"),
+  productColors: document.getElementById("productColors"),
   thumbsColumn: document.getElementById("thumbsColumn"),
+  mainProductImage: document.getElementById("mainProductImage"),
   relatedProductsGrid: document.getElementById("relatedProductsGrid"),
-  consultBtn: document.querySelector(".detail-consult-link"),
   currencyBtns: document.querySelectorAll(".currency-btn"),
-  qtyInput: document.getElementById("qty")
+  consultBtn: document.querySelector(".detail-consult-link"),
+  qtyInput: document.getElementById("qty"),
+  detailInlineCart: document.getElementById("detailInlineCart")
 };
 
-function escapeHtml(value) {
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;");
+let currentProduct = null;
+
+const badgeMeta = {
+  destacado: { label: "Destacado", className: "is-dark" },
+  nuevo: { label: "Nuevo", className: "is-green" },
+  "mas-vendido": { label: "Más vendido", className: "is-gold" },
+  oferta: { label: "Oferta", className: "is-red" },
+  "edicion-limitada": { label: "Edición limitada", className: "is-dark" }
+};
+
+function renderNotFound() {
+  document.title = "Jarama – Producto no encontrado";
+  const main = document.querySelector(".page-main");
+  if (!main) return;
+
+  main.innerHTML = `
+    <section class="section-spacing">
+      <div class="container-wide empty-page-state">
+        <p class="eyebrow">Oops</p>
+        <h1>Este producto no existe o ya no está disponible.</h1>
+        <p>Podés volver al catálogo principal y seguir explorando la colección Jarama.</p>
+        <a class="btn btn-primary" href="index.html">Volver al catálogo</a>
+      </div>
+    </section>
+  `;
 }
 
-function createThumbButton(src, alt, active = false) {
+function renderLoadingState() {
+  if (dom.productTitle) dom.productTitle.textContent = "Cargando producto…";
+  if (dom.productDescription) {
+    dom.productDescription.textContent = "Estamos trayendo la ficha desde Supabase o desde el respaldo local.";
+  }
+}
+
+function createThumbButton(imageSrc, imageAlt, isActive = false) {
   const button = document.createElement("button");
+  button.className = `thumb-btn ${isActive ? "active" : ""}`;
   button.type = "button";
-  button.className = `thumb-btn${active ? " active" : ""}`;
-  button.innerHTML = `<img src="${src}" alt="${alt}">`;
+  button.innerHTML = `<img src="${imageSrc}" alt="${imageAlt}">`;
 
   button.addEventListener("click", () => {
-    document.querySelectorAll(".thumb-btn").forEach((element) => element.classList.remove("active"));
+    document.querySelectorAll(".thumb-btn").forEach((thumb) => thumb.classList.remove("active"));
     button.classList.add("active");
+
     if (dom.mainProductImage) {
-      dom.mainProductImage.src = src;
-      dom.mainProductImage.alt = alt;
+      dom.mainProductImage.src = imageSrc;
+      dom.mainProductImage.alt = imageAlt;
     }
   });
 
   return button;
 }
 
-function createRelatedCard(product) {
-  return `
-    <article class="product-card">
-      <a href="producto.html?slug=${product.slug}" class="product-link">
-        <div class="product-image-wrapper">
-          <img src="${product.imagenes[0]}" alt="${escapeHtml(product.nombre)}">
-          ${!product.stock ? '<span class="product-ribbon">SIN STOCK</span>' : ""}
-        </div>
-        <h3 class="product-name">${escapeHtml(product.nombre)}</h3>
-        <p class="product-price">${formatPriceUyu(product.precioUYU)}</p>
-      </a>
-    </article>
-  `;
-}
+function badgeMarkup(product) {
+  if (!Array.isArray(product.badges) || !product.badges.length) return "";
 
-function renderLoadingState() {
-  dom.productTitle.textContent = "Cargando producto…";
-  dom.productDescription.textContent = "Estamos buscando la ficha de este artículo en la colección Jarama.";
-}
-
-function renderNotFound() {
-  dom.productTitle.textContent = "Producto no encontrado";
-  dom.productDescription.textContent = "No pudimos encontrar este artículo. Podés volver al catálogo para seguir explorando la tienda.";
-  dom.relatedProductsGrid.innerHTML = "";
-}
-
-function renderBadgeRow(product) {
-  if (!dom.productBadges) return;
-  const badges = Array.isArray(product.badges) ? product.badges : [];
-  dom.productBadges.innerHTML = badges
-    .map((badge) => {
-      const meta = badgeMap[badge] || { label: badge, className: "" };
-      return `<span class="detail-badge ${meta.className}">${escapeHtml(meta.label)}</span>`;
+  return product.badges
+    .map((badgeKey) => {
+      const badge = badgeMeta[badgeKey] || { label: badgeKey, className: "" };
+      return `<span class="detail-badge ${badge.className}">${badge.label}</span>`;
     })
     .join("");
 }
 
-function renderColors(product) {
-  if (!dom.productColors || !dom.productColorsBlock) return;
-  const colors = Array.isArray(product.colores) ? product.colores : [];
-
-  if (!colors.length) {
-    dom.productColorsBlock.hidden = true;
-    dom.productColors.innerHTML = "";
-    return;
-  }
-
-  dom.productColorsBlock.hidden = false;
-  dom.productColors.innerHTML = colors
+function colorMarkup(colors = []) {
+  return colors
     .map((color) => `
       <span class="color-pill">
         <span class="color-pill__dot"></span>
-        ${escapeHtml(color)}
+        <span>${color}</span>
       </span>
     `)
     .join("");
 }
 
-function renderRelated(product) {
-  getRelatedProducts(product).then((related) => {
-    dom.relatedProductsGrid.innerHTML = related.length
-      ? related.map(createRelatedCard).join("")
-      : '<article class="empty-state"><p>No encontramos productos relacionados todavía.</p></article>';
+function createRelatedCard(relatedProduct) {
+  const badge = !relatedProduct.stock
+    ? { label: "Sin stock", className: "is-red" }
+    : (Array.isArray(relatedProduct.badges) && relatedProduct.badges[0]
+      ? badgeMeta[relatedProduct.badges[0]] || null
+      : null);
+
+  const article = document.createElement("article");
+  article.className = "product-card";
+  article.innerHTML = `
+    <a href="producto.html?slug=${encodeURIComponent(relatedProduct.slug)}" class="product-link">
+      <div class="product-image-wrapper">
+        <img src="${relatedProduct.imagenes[0]}" alt="${relatedProduct.nombre}">
+        ${badge ? `<span class="product-ribbon ${badge.className}">${badge.label}</span>` : ""}
+      </div>
+    </a>
+    <div class="product-card__body">
+      <a href="producto.html?slug=${encodeURIComponent(relatedProduct.slug)}" class="product-link product-link--body">
+        <h3 class="product-name">${relatedProduct.nombre}</h3>
+      </a>
+      <div class="product-price-row">
+        <p class="product-price">${formatPriceUyu(relatedProduct.precioUYU)}</p>
+        <button class="product-quick-add" type="button" ${!relatedProduct.stock ? "disabled" : ""}>
+          <i class="ph-shopping-cart-simple"></i>
+        </button>
+      </div>
+    </div>
+  `;
+
+  article.querySelector(".product-quick-add")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!relatedProduct.stock) return;
+    window.JaramaApp?.addItemToCart?.({
+      id: relatedProduct.id,
+      slug: relatedProduct.slug,
+      nombre: relatedProduct.nombre,
+      precioUYU: relatedProduct.precioUYU,
+      cantidad: 1,
+      imagen: relatedProduct.imagenes?.[0] || ""
+    });
+  });
+
+  return article;
+}
+
+async function renderRelated(productData) {
+  const related = await getRelatedProducts(productData, 3);
+  if (!dom.relatedProductsGrid) return;
+  dom.relatedProductsGrid.innerHTML = "";
+  related.forEach((relatedProduct) => {
+    dom.relatedProductsGrid.appendChild(createRelatedCard(relatedProduct));
   });
 }
 
-function renderProduct(productData) {
-  currentProduct = productData;
+function buildCartItem(quantity) {
+  return {
+    id: currentProduct.id,
+    slug: currentProduct.slug,
+    nombre: currentProduct.nombre,
+    precioUYU: currentProduct.precioUYU,
+    cantidad: quantity,
+    imagen: currentProduct.imagenes?.[0] || ""
+  };
+}
 
+function setCartButtonFeedback(button) {
+  if (!button) return;
+  button.innerHTML = '<i class="ph-check"></i>';
+  setTimeout(() => {
+    button.innerHTML = '<i class="ph-shopping-cart-simple"></i>';
+  }, 1200);
+}
+
+function renderProduct(productData) {
   if (!productData) {
     renderNotFound();
     return;
   }
+
+  currentProduct = productData;
+  document.title = `Jarama – ${productData.nombre}`;
 
   dom.productStatus.textContent = productData.stock ? "Disponible" : "Sin stock";
   dom.productStatus.classList.toggle("is-out", !productData.stock);
@@ -141,9 +191,15 @@ function renderProduct(productData) {
   dom.productDescription.textContent = productData.descripcion;
   dom.productPrice.dataset.priceUyu = String(productData.precioUYU);
   dom.productPrice.textContent = formatPriceUyu(productData.precioUYU);
+  dom.productBadges.innerHTML = badgeMarkup(productData);
 
-  renderBadgeRow(productData);
-  renderColors(productData);
+  const colors = Array.isArray(productData.colores) ? productData.colores : [];
+  if (colors.length) {
+    dom.productColorsBlock.hidden = false;
+    dom.productColors.innerHTML = colorMarkup(colors);
+  } else {
+    dom.productColorsBlock.hidden = true;
+  }
 
   if (dom.mainProductImage && productData.imagenes.length) {
     dom.mainProductImage.src = productData.imagenes[0];
@@ -164,15 +220,12 @@ function initCurrencySwitch() {
   dom.currencyBtns.forEach((button) => {
     button.addEventListener("click", () => {
       if (!currentProduct) return;
-
       dom.currencyBtns.forEach((btn) => btn.classList.remove("active"));
       button.classList.add("active");
-
       const selectedCurrency = button.dataset.currency;
-      dom.productPrice.textContent =
-        selectedCurrency === "USD"
-          ? formatPriceUsd(currentProduct.precioUYU)
-          : formatPriceUyu(currentProduct.precioUYU);
+      dom.productPrice.textContent = selectedCurrency === "USD"
+        ? formatPriceUsd(currentProduct.precioUYU)
+        : formatPriceUyu(currentProduct.precioUYU);
     });
   });
 }
@@ -188,7 +241,6 @@ function initConsultModal() {
     consultModal.classList.add("is-visible");
     consultModal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
-
     if (modalTextarea && currentProduct) {
       modalTextarea.value = `Hola, quiero consultar por ${currentProduct.nombre}.`;
     }
@@ -202,11 +254,9 @@ function initConsultModal() {
 
   dom.consultBtn.addEventListener("click", openConsultModal);
   modalCloseBtn?.addEventListener("click", closeConsultModal);
-
   consultModal.addEventListener("click", (event) => {
     if (event.target === consultModal) closeConsultModal();
   });
-
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && consultModal.classList.contains("is-visible")) {
       closeConsultModal();
@@ -214,38 +264,21 @@ function initConsultModal() {
   });
 }
 
-function initCartButton() {
+function initCartButtons() {
   const addToCartBtn = document.querySelector(".btn-add-cart");
   if (!addToCartBtn) return;
 
-  addToCartBtn.addEventListener("click", () => {
+  const handleAdd = (button) => {
     if (!currentProduct) return;
-
-    if (!currentProduct.stock) {
-      addToCartBtn.innerHTML = '<i class="ph-warning"></i> Sin stock';
-      return;
-    }
-
+    if (!currentProduct.stock) return;
     const quantity = Number(dom.qtyInput?.value || 1);
     const safeQuantity = Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
+    window.JaramaApp?.addItemToCart?.(buildCartItem(safeQuantity));
+    setCartButtonFeedback(button);
+  };
 
-    const cartItem = {
-      id: currentProduct.id,
-      slug: currentProduct.slug,
-      nombre: currentProduct.nombre,
-      precioUYU: currentProduct.precioUYU,
-      cantidad: safeQuantity,
-      imagen: currentProduct.imagenes[0]
-    };
-
-    window.JaramaApp?.addItemToCart?.(cartItem);
-
-    addToCartBtn.innerHTML = '<i class="ph-check"></i> Agregado';
-
-    setTimeout(() => {
-      addToCartBtn.innerHTML = '<i class="ph-shopping-cart-simple"></i> Agregar al carrito';
-    }, 1500);
-  });
+  addToCartBtn.addEventListener("click", () => handleAdd(addToCartBtn));
+  dom.detailInlineCart?.addEventListener("click", () => handleAdd(dom.detailInlineCart));
 }
 
 async function bootstrap() {
@@ -254,7 +287,7 @@ async function bootstrap() {
   renderProduct(product);
   initCurrencySwitch();
   initConsultModal();
-  initCartButton();
+  initCartButtons();
 }
 
 document.addEventListener("DOMContentLoaded", bootstrap);

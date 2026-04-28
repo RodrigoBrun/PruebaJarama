@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Jarama Admin — Banners</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://unpkg.com/phosphor-icons"></script>
+
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages/admin-dashboard.css" />
+  <link rel="stylesheet" href="../css/pages/admin-products.css" />
+</head>
+
+<body class="admin-body">
+  <div class="admin-shell">
+    <div class="admin-shell__overlay" data-admin-overlay data-admin-sidebar-close></div>
+
+    <aside class="admin-sidebar" data-admin-sidebar>
+      <div class="admin-sidebar__head">
+        <a href="index.html" class="admin-brand">
+          <span class="logo-title">JARAMA</span>
+          <span class="logo-subtitle">Panel privado</span>
+        </a>
+        <button class="admin-sidebar__close" type="button" data-admin-sidebar-close aria-label="Cerrar menú">
+          <i class="ph-x"></i>
+        </button>
+      </div>
+
+      <nav class="admin-nav" aria-label="Navegación del panel">
+        <a href="index.html" class="admin-nav__item">
+          <i class="ph-squares-four"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="productos.html" class="admin-nav__item">
+          <i class="ph-armchair"></i>
+          <span>Productos</span>
+        </a>
+
+        <a href="categorias.html" class="admin-nav__item">
+          <i class="ph-tree-structure"></i>
+          <span>Categorías</span>
+        </a>
+
+        <a href="pedidos.html" class="admin-nav__item">
+          <i class="ph-receipt"></i>
+          <span>Pedidos</span>
+        </a>
+
+        <a href="banners.html" class="admin-nav__item is-active">
+          <i class="ph-images"></i>
+          <span>Banners</span>
+        </a>
+
+        <a href="bsd.html" class="admin-nav__item">
+          <i class="ph-database"></i>
+          <span>BSD</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar__footer">
+        <p>Gestión visual de banners para la tienda pública. Acá Soledad puede activar, ocultar, ordenar y cambiar
+          creatividades sin tocar el frontend.</p>
+        <button class="btn btn-secondary btn-block" type="button" id="logoutBtn">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar__left">
+          <button class="admin-mobile-toggle" type="button" data-admin-sidebar-toggle aria-label="Abrir navegación">
+            <i class="ph-list"></i>
+          </button>
+          <div>
+            <p class="eyebrow">Visual comercial</p>
+            <h1>Banners administrables</h1>
+          </div>
+        </div>
+
+        <div class="admin-user-chip">
+          <i class="ph-user-circle"></i>
+          <div>
+            <strong id="adminName">Administrador</strong>
+            <span id="adminEmail">cargando...</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-status-card" id="bannersStatus" hidden></section>
+
+      <section class="admin-grid" style="margin-bottom:18px;">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Configuración global</p>
+              <h2>Visibilidad de la sección</h2>
+            </div>
+          </div>
+
+          <div class="admin-form-switches admin-form-switches--badges">
+            <label class="admin-switch">
+              <input type="checkbox" id="bannersSectionEnabled" />
+              <span>Mostrar sección de banners en la tienda pública</span>
+            </label>
+          </div>
+
+          <div class="admin-form-actions" style="margin-top:14px;">
+            <button class="btn btn-primary" type="button" id="saveBannersSectionBtn">
+              <i class="ph-floppy-disk"></i>
+              Guardar configuración
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <section class="admin-grid admin-grid--stats admin-grid--products-mini">
+        <article class="admin-stat-card">
+          <p>Banners totales</p>
+          <strong id="statBannerCount">—</strong>
+          <span>Piezas registradas en la base</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Activos</p>
+          <strong id="statBannerActive">—</strong>
+          <span>Se mostrarán en la tienda pública</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Con link</p>
+          <strong id="statBannerLinked">—</strong>
+          <span>Tienen destino clickeable</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <p>Nueva pestaña</p>
+          <strong id="statBannerNewTab">—</strong>
+          <span>Abren fuera de la tienda</span>
+        </article>
+      </section>
+
+      <section class="admin-products-layout">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Formulario</p>
+              <h2 id="bannerFormTitle">Nuevo banner</h2>
+            </div>
+
+            <div class="admin-toolbar">
+              <button type="button" class="btn btn-secondary" id="resetBannerFormBtn">
+                <i class="ph-arrow-counter-clockwise"></i>
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <form class="admin-product-form" id="bannerForm">
+            <input type="hidden" id="bannerId" />
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Título *
+                <input type="text" id="bannerTitle" placeholder="Ej: Marca aliada LG" required />
+              </label>
+
+              <label>
+                Posición
+                <select id="bannerSortOrder">
+                  <option value="1">Posición 1</option>
+                  <option value="2">Posición 2</option>
+                  <option value="3">Posición 3</option>
+                  <option value="4">Posición 4</option>
+                  <option value="5">Posición 5</option>
+                  <option value="6">Posición 6</option>
+                  <option value="7">Posición 7</option>
+                  <option value="8">Posición 8</option>
+                  <option value="9">Posición 9</option>
+                  <option value="10">Posición 10</option>
+                  <option value="11">Posición 11</option>
+                  <option value="12">Posición 12</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Imagen URL
+                <input type="text" id="bannerImageUrl" placeholder="https://... o se completa sola al subir archivo" />
+              </label>
+
+              <label>
+                Link destino
+                <input type="text" id="bannerTargetUrl" placeholder="https://... o index.html?categoria=deco" />
+              </label>
+            </div>
+
+            <div class="admin-form-grid admin-form-grid--two">
+              <label>
+                Subir archivo
+                <input type="file" id="bannerFile" accept="image/*" />
+              </label>
+
+              <div>
+                <span class="admin-field-label">Preview antes de guardar</span>
+                <div id="bannerLivePreview"
+                  style="margin-top:8px; border:1px solid var(--color-border-soft); border-radius:16px; overflow:hidden; background:#faf6f2; min-height:120px; display:grid; place-items:center; padding:10px;">
+                  <span style="font-size:13px; color:#7f6d63;">Todavía no hay imagen seleccionada</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-form-switches admin-form-switches--badges">
+              <span class="admin-field-label">Visibilidad y comportamiento</span>
+
+              <label class="admin-switch">
+                <input type="checkbox" id="bannerIsActive" checked />
+                <span>Activo</span>
+              </label>
+
+              <label class="admin-switch">
+                <input type="checkbox" id="bannerOpenInNewTab" />
+                <span>Abrir en nueva pestaña</span>
+              </label>
+            </div>
+
+            <div class="admin-form-actions">
+              <button class="btn btn-primary" type="submit" id="saveBannerBtn">
+                <i class="ph-floppy-disk"></i>
+                Guardar banner
+              </button>
+            </div>
+          </form>
+        </article>
+
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Base real</p>
+              <h2>Listado de banners</h2>
+            </div>
+
+            <div class="admin-toolbar">
+              <label class="admin-search-box">
+                <i class="ph-magnifying-glass"></i>
+                <input type="search" id="bannerSearch" placeholder="Buscar por título, link o estado" />
+              </label>
+            </div>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table admin-products-table">
+              <thead>
+                <tr>
+                  <th>Banner</th>
+                  <th>Posición</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="bannersTableBody">
+                <tr>
+                  <td colspan="4">Cargando banners…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="admin-grid" style="margin-top: 18px;">
+        <article class="admin-panel-card">
+          <div class="admin-panel-card__head admin-panel-card__head--stack">
+            <div>
+              <p class="eyebrow">Preview</p>
+              <h2>Vista rápida de banners</h2>
+            </div>
+          </div>
+
+          <div id="bannersPreviewGrid" style="display:grid; gap:16px;">
+            <p>Cargando preview…</p>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="../js/admin/banners.js"></script>
+</body>
+
+</html>
