@@ -97,6 +97,20 @@ function initSearchForms() {
   searchForms.forEach((form) => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
+      const input = form.querySelector('input[type="search"]');
+      const query = String(input?.value || "").trim();
+
+      if (!query) return;
+
+      const isHome = window.location.pathname.toLowerCase().endsWith("/index.html") ||
+        window.location.pathname === "/" ||
+        !window.location.pathname.split("/").pop();
+
+      if (isHome) {
+        window.dispatchEvent(new CustomEvent("jarama:search", { detail: { query } }));
+      } else {
+        window.location.href = `index.html?buscar=${encodeURIComponent(query)}#catalogoPrincipal`;
+      }
     });
   });
 }

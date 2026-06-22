@@ -147,8 +147,7 @@ function buildMobileDrawer(categories) {
     <aside class="mobile-drawer__panel">
       <div class="mobile-drawer__top">
         <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
-          <span class="logo-title">JARAMA</span>
-          <span class="logo-subtitle">Home &amp; Deco</span>
+          <img class="brand-logo" src="assets/logo-jarama.svg" alt="Jarama Home &amp; Deco" width="553" height="119" />
         </a>
         <button class="mobile-drawer__close" type="button" data-mobile-menu-close aria-label="Cerrar menú">
           <i class="ph-x"></i>

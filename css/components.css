@@ -13,7 +13,7 @@
 }
 
 .icon-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(72, 56, 48, 0.08);
 }
 
 .mobile-fab {
@@ -114,6 +114,11 @@
   transition: transform 0.35s ease;
 }
 
+.product-image-wrapper img[src$=".svg"] {
+  object-fit: contain;
+  padding: clamp(24px, 8%, 44px);
+}
+
 .product-card:hover .product-image-wrapper img {
   transform: scale(1.04);
 }
@@ -163,7 +168,7 @@
 
 .product-card__body {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   padding: 16px 4px 2px;
 }
 
@@ -174,6 +179,31 @@
   font-weight: 600;
   text-transform: uppercase;
   color: var(--color-text-strong);
+}
+
+.product-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.product-card__meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #f5eee7;
+  color: #7a675c;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.product-card__summary {
+  min-height: 44px;
+  color: #76655b;
+  font-size: 13px;
+  line-height: 1.7;
 }
 
 .product-price-row {
@@ -188,6 +218,44 @@
   font-weight: 700;
   color: var(--color-text-strong);
   margin: 0;
+}
+
+.product-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 2px;
+  font-size: 13px;
+}
+
+.product-card__footer a {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.product-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #7a675c;
+}
+
+.product-stock::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #9b8a80;
+}
+
+.product-stock.is-available::before {
+  background: #6f9067;
+}
+
+.product-stock.is-unavailable::before {
+  background: #a15a50;
 }
 
 .product-quick-add,
@@ -348,6 +416,8 @@
   margin-bottom: 18px;
   font-family: var(--font-heading);
   font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
   color: var(--color-text-strong);
 }
 
@@ -361,6 +431,8 @@
   margin-bottom: 6px;
   font-family: var(--font-heading);
   font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   color: var(--color-text-strong);
 }
 

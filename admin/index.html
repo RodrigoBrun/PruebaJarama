@@ -7,7 +7,7 @@
   <title>Jarama Admin — Dashboard</title>
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
   <script src="https://unpkg.com/phosphor-icons"></script>
 
@@ -24,8 +24,8 @@
     <aside class="admin-sidebar" data-admin-sidebar>
       <div class="admin-sidebar__head">
         <a href="index.html" class="admin-brand">
-          <span class="logo-title">JARAMA</span>
-          <span class="logo-subtitle">Panel privado</span>
+          <img class="brand-logo" src="../assets/logo-jarama.svg" alt="Jarama Home &amp; Deco" width="553" height="119" />
+          <span class="admin-brand__subtitle">Panel privado</span>
         </a>
         <button class="admin-sidebar__close" type="button" data-admin-sidebar-close aria-label="Cerrar menú">
           <i class="ph-x"></i>
@@ -92,6 +92,44 @@
       </header>
 
       <section class="admin-status-card" id="dashboardStatus" hidden></section>
+
+      <section class="admin-action-board" aria-label="Prioridades del día">
+        <article class="admin-action-card">
+          <span class="admin-action-card__icon"><i class="ph-receipt"></i></span>
+          <div>
+            <p>Pedidos por atender</p>
+            <strong id="taskPendingOrders">—</strong>
+            <a href="pedidos.html?estado=pending">Revisar pedidos</a>
+          </div>
+        </article>
+
+        <article class="admin-action-card">
+          <span class="admin-action-card__icon"><i class="ph-warning-circle"></i></span>
+          <div>
+            <p>Productos sin stock</p>
+            <strong id="taskOutOfStock">—</strong>
+            <a href="productos.html?stock=out">Resolver stock</a>
+          </div>
+        </article>
+
+        <article class="admin-action-card">
+          <span class="admin-action-card__icon"><i class="ph-image-square"></i></span>
+          <div>
+            <p>Sin imagen cargada</p>
+            <strong id="taskMissingImages">—</strong>
+            <a href="productos.html?falta=imagen">Completar fichas</a>
+          </div>
+        </article>
+
+        <article class="admin-action-card admin-action-card--primary">
+          <span class="admin-action-card__icon"><i class="ph-plus-circle"></i></span>
+          <div>
+            <p>Acción rápida</p>
+            <strong>Nuevo producto</strong>
+            <a href="productos.html#productForm">Cargar ahora</a>
+          </div>
+        </article>
+      </section>
 
       <section class="admin-grid admin-grid--stats">
         <article class="admin-stat-card">

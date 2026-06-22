@@ -98,6 +98,8 @@
 .detail-right h1 {
   font-family: var(--font-heading);
   font-size: clamp(30px, 3vw, 42px);
+  font-weight: 400;
+  letter-spacing: 0.035em;
   line-height: 1.15;
   color: var(--color-text-strong);
 }
@@ -219,6 +221,8 @@
   margin: 10px 0 16px;
   font-family: var(--font-heading);
   font-size: clamp(32px, 4vw, 52px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
 }
 
 .empty-page-state p:last-of-type {

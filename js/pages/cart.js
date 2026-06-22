@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cartItemsEl.innerHTML = cart.map((item) => `
       <article class="cart-item" data-id="${item.id}">
         <div class="cart-item__media">
-          <img src="${item.imagen || 'imagenes/placeholder.jpg'}" alt="${item.nombre}">
+          <img src="${item.imagen || 'assets/logo-jarama.svg'}" alt="${item.nombre}" onerror="this.onerror=null; this.src='assets/logo-jarama.svg';">
         </div>
         <div class="cart-item__body">
           <h3 class="cart-item__title">${item.nombre}</h3>

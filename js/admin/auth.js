@@ -148,9 +148,22 @@ export async function getDashboardStats() {
     .order("created_at", { ascending: false })
     .limit(5);
 
+  const { data: productsData, error: productsError } = await client
+    .from("products")
+    .select("id, in_stock, images");
+
+  const productRows = productsError ? [] : (productsData ?? []);
+  const outOfStockProducts = productRows.filter((product) => !product.in_stock).length;
+  const productsWithoutImages = productRows.filter((product) => {
+    const images = Array.isArray(product.images) ? product.images : [];
+    return images.length === 0;
+  }).length;
+
   return {
     totalProducts,
     stockProducts,
+    outOfStockProducts,
+    productsWithoutImages,
     totalOrders,
     pendingOrders,
     recentOrders: error ? [] : (recentOrders ?? [])

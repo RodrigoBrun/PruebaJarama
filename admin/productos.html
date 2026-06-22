@@ -7,7 +7,7 @@
   <title>Jarama Admin — Productos</title>
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
   <script src="https://unpkg.com/phosphor-icons"></script>
 
@@ -25,8 +25,8 @@
     <aside class="admin-sidebar" data-admin-sidebar>
       <div class="admin-sidebar__head">
         <a href="index.html" class="admin-brand">
-          <span class="logo-title">JARAMA</span>
-          <span class="logo-subtitle">Panel privado</span>
+          <img class="brand-logo" src="../assets/logo-jarama.svg" alt="Jarama Home &amp; Deco" width="553" height="119" />
+          <span class="admin-brand__subtitle">Panel privado</span>
         </a>
         <button class="admin-sidebar__close" type="button" data-admin-sidebar-close aria-label="Cerrar menú">
           <i class="ph-x"></i>
@@ -145,6 +145,9 @@
           <form class="admin-product-form" id="productForm">
             <input type="hidden" id="productId" />
 
+            <details class="admin-form-section" open>
+              <summary>Datos básicos y precio</summary>
+              <div class="admin-form-section__body">
             <div class="admin-form-grid admin-form-grid--two">
               <label>
                 Nombre *
@@ -234,6 +237,12 @@
               </div>
             </div>
 
+              </div>
+            </details>
+
+            <details class="admin-form-section" open>
+              <summary>Contenido comercial</summary>
+              <div class="admin-form-section__body">
             <label>
               Resumen
               <textarea id="productSummary" rows="2" placeholder="Texto corto para cards o promos."></textarea>
@@ -244,6 +253,12 @@
               <textarea id="productDescription" rows="4" placeholder="Descripción completa del producto."></textarea>
             </label>
 
+              </div>
+            </details>
+
+            <details class="admin-form-section" open>
+              <summary>Imágenes y galería</summary>
+              <div class="admin-form-section__body">
             <section class="admin-media-block">
               <div class="admin-media-block__head">
                 <div>
@@ -296,6 +311,12 @@
               </div>
             </section>
 
+              </div>
+            </details>
+
+            <details class="admin-form-section">
+              <summary>Visibilidad y etiquetas</summary>
+              <div class="admin-form-section__body">
             <div class="admin-form-switches admin-form-switches--badges">
               <span class="admin-field-label">Atributos de visibilidad</span>
               <label class="admin-switch"><input type="checkbox" id="badgeFeatured" /><span>Destacado</span></label>
@@ -305,6 +326,9 @@
               <label class="admin-switch"><input type="checkbox" id="badgeLimited" /><span>Edición
                   limitada</span></label>
             </div>
+
+              </div>
+            </details>
 
             <div class="admin-form-actions">
               <button class="btn btn-primary" type="submit" id="saveProductBtn">

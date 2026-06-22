@@ -21,6 +21,7 @@ const elements = {
   exportExcelBtn: document.getElementById("exportOrdersExcelBtn"),
 
   tableBody: document.getElementById("ordersTableBody"),
+  board: document.getElementById("ordersBoard"),
   detail: document.getElementById("orderDetail")
 };
 
@@ -93,6 +94,55 @@ function renderStats() {
   elements.statOrdersPending.textContent = pending;
   elements.statOrdersPaid.textContent = paid;
   elements.statOrdersDelivered.textContent = delivered;
+}
+
+function getStatusMeta(status) {
+  const map = {
+    pending: { label: "Pendiente", badge: "admin-badge--pending" },
+    paid: { label: "Pagado", badge: "admin-badge--paid" },
+    delivered: { label: "Entregado", badge: "admin-badge--done" },
+    cancelled: { label: "Cancelado", badge: "admin-badge--cancelled" }
+  };
+
+  return map[status] || map.pending;
+}
+
+function renderBoard() {
+  if (!elements.board) return;
+
+  const statuses = ["pending", "paid", "delivered", "cancelled"];
+
+  elements.board.innerHTML = statuses
+    .map((status) => {
+      const meta = getStatusMeta(status);
+      const orders = state.orders.filter((order) => String(order.status || "pending") === status);
+      const visibleOrders = orders.slice(0, 4);
+
+      return `
+        <article class="orders-board-column">
+          <div class="orders-board-column__head">
+            <strong>${meta.label}</strong>
+            <span class="admin-badge ${meta.badge}">${orders.length}</span>
+          </div>
+          <div class="orders-board-column__body">
+            ${
+              visibleOrders.length
+                ? visibleOrders
+                  .map((order) => `
+                    <button type="button" class="orders-board-card" data-board-id="${order.id}">
+                      <strong>${escapeHtml(order.order_code || "Sin código")}</strong>
+                      <span>${escapeHtml(order.customer_name || "Cliente")} · ${formatUyu(order.total_uyu)}</span>
+                      <span>${formatDate(order.created_at)}</span>
+                    </button>
+                  `)
+                  .join("")
+                : `<p class="orders-board-empty">Sin pedidos en este estado.</p>`
+            }
+          </div>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function getItemsForOrder(orderId) {
@@ -294,6 +344,7 @@ async function fetchOrders() {
 
   if (!state.orders.length) {
     state.orderItems = [];
+    renderBoard();
     applyFilter();
     renderDetail();
     return;
@@ -310,6 +361,7 @@ async function fetchOrders() {
   if (itemsError) throw itemsError;
 
   state.orderItems = Array.isArray(items) ? items : [];
+  renderBoard();
   applyFilter();
   renderDetail();
 }
@@ -379,6 +431,14 @@ function clearFilters() {
   elements.search.value = "";
   elements.statusFilter.value = "all";
   applyFilter();
+}
+
+function applyUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get("estado");
+  if (["pending", "paid", "delivered", "cancelled"].includes(status)) {
+    elements.statusFilter.value = status;
+  }
 }
 
 function groupItemsByOrder(items) {
@@ -550,6 +610,16 @@ function attachTableEvents() {
   });
 }
 
+function attachBoardEvents() {
+  elements.board?.addEventListener("click", (event) => {
+    const card = event.target.closest("[data-board-id]");
+    if (!card) return;
+    state.selectedOrderId = card.dataset.boardId;
+    renderDetail();
+    elements.detail?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 function bindEvents() {
   elements.logoutBtn?.addEventListener("click", async () => {
     await signOutAdmin();
@@ -562,6 +632,7 @@ function bindEvents() {
   elements.exportExcelBtn?.addEventListener("click", exportOrdersExcel);
 
   attachTableEvents();
+  attachBoardEvents();
 }
 
 async function bootstrap() {
@@ -578,6 +649,7 @@ async function bootstrap() {
   elements.adminEmail.textContent = user.email || "—";
 
   bindEvents();
+  applyUrlFilters();
 
   try {
     await fetchOrders();

@@ -32,20 +32,8 @@ function slugify(value = "") {
     .replace(/^-+|-+$/g, "");
 }
 
-function placeholderSvg(label = "Jarama") {
-  const safeLabel = String(label || "Jarama")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .slice(0, 38);
-
-  return `data:image/svg+xml;utf8,${encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
-      <rect width="900" height="700" fill="#f4eee8"/>
-      <rect x="58" y="58" width="784" height="584" rx="28" fill="#efe4d8" stroke="#d8c4b2"/>
-      <text x="50%" y="47%" text-anchor="middle" font-family="Georgia, serif" font-size="54" fill="#8f7866">JARAMA</text>
-      <text x="50%" y="58%" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#a38c79">${safeLabel}</text>
-    </svg>
-  `)}`;
+function placeholderSvg() {
+  return "assets/logo-jarama.svg";
 }
 
 function normalizeArray(value) {

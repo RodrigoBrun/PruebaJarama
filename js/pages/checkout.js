@@ -43,7 +43,7 @@ function createSummaryItem(item) {
   article.className = "checkout-item";
   article.innerHTML = `
     <div class="checkout-item__image">
-      <img src="${item.imagen || "imagenes/placeholder.jpg"}" alt="${item.nombre}">
+      <img src="${item.imagen || "assets/logo-jarama.svg"}" alt="${item.nombre}" onerror="this.onerror=null; this.src='assets/logo-jarama.svg';">
     </div>
     <div>
       <h3 class="checkout-item__name">${item.nombre}</h3>

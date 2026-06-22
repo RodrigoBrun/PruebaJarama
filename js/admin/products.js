@@ -75,7 +75,8 @@ let state = {
   rootCategories: [],
   editingId: null,
   confirmAction: null,
-  localPreviewFiles: []
+  localPreviewFiles: [],
+  missingImageOnly: false
 };
 
 function showStatus(message, type = "info") {
@@ -272,11 +273,19 @@ function renderImagePreview() {
   }
 
   const savedCards = textareaImages.map((url, index) => `
-    <article class="admin-preview-card">
+    <article class="admin-preview-card" draggable="true" data-image-index="${index}">
       <img src="${escapeHtml(url)}" alt="Preview ${index + 1}" />
       <button type="button" class="admin-preview-remove" data-remove-image="${escapeHtml(url)}" aria-label="Quitar imagen">
         <i class="ph-x"></i>
       </button>
+      <div class="admin-preview-order">
+        <button type="button" data-move-image="${index}" data-direction="up" aria-label="Subir imagen">
+          <i class="ph-arrow-up"></i>
+        </button>
+        <button type="button" data-move-image="${index}" data-direction="down" aria-label="Bajar imagen">
+          <i class="ph-arrow-down"></i>
+        </button>
+      </div>
       <span class="admin-preview-badge">Guardada</span>
     </article>
   `);
@@ -325,11 +334,28 @@ function renderTable(products) {
             </div>
           </td>
           <td>${escapeHtml(categoryLabel || "Sin categoría")}</td>
-          <td>${formatUyu(product.price_uyu)}</td>
-          <td>${stockMarkup(product)}</td>
-          <td><div class="admin-badge-group">${renderBadges(badges)}</div></td>
+          <td>
+            <input class="admin-table-input admin-quick-price" type="number" min="0" step="0.01" value="${Number(product.price_uyu || 0)}" data-id="${product.id}" aria-label="Precio de ${escapeHtml(product.name)}" />
+          </td>
+          <td>
+            <select class="admin-table-select admin-quick-stock" data-id="${product.id}" aria-label="Stock de ${escapeHtml(product.name)}">
+              <option value="in" ${product.in_stock ? "selected" : ""}>Con stock</option>
+              <option value="out" ${!product.in_stock ? "selected" : ""}>Sin stock</option>
+            </select>
+          </td>
+          <td>
+            <div class="admin-badge-group">${renderBadges(badges)}</div>
+            <label class="admin-table-check">
+              <input class="admin-quick-featured" type="checkbox" data-id="${product.id}" ${product.featured ? "checked" : ""} />
+              Destacado
+            </label>
+          </td>
           <td>
             <div class="admin-inline-actions">
+              <button class="admin-inline-btn admin-inline-btn--save" type="button" data-action="quick-save" data-id="${product.id}">
+                <i class="ph-check-circle"></i> Guardar rápido
+              </button>
+
               <a class="admin-inline-btn" href="../producto.html?slug=${encodeURIComponent(product.slug)}" target="_blank" rel="noreferrer">
                 <i class="ph-arrow-square-out"></i> Ver
               </a>
@@ -389,8 +415,10 @@ function applyFilter() {
       categoryFilter === "all"
         ? true
         : String(product.category_slug || "") === categoryFilter;
+    const images = Array.isArray(product.images) ? product.images : [];
+    const matchesMissingImage = state.missingImageOnly ? images.length === 0 : true;
 
-    return matchesText && matchesStock && matchesFeatured && matchesCategory;
+    return matchesText && matchesStock && matchesFeatured && matchesCategory && matchesMissingImage;
   });
 
   renderTable(state.filteredProducts);
@@ -401,6 +429,7 @@ function clearFilters() {
   elements.filterStock.value = "all";
   elements.filterFeatured.value = "all";
   elements.filterCategory.value = "all";
+  state.missingImageOnly = false;
   applyFilter();
 }
 
@@ -643,6 +672,48 @@ async function archiveProduct(id) {
   }
 }
 
+async function quickSaveProduct(id) {
+  const product = state.products.find((item) => item.id === id);
+  if (!product) return;
+
+  const priceInput = [...elements.tableBody.querySelectorAll(".admin-quick-price")]
+    .find((input) => String(input.dataset.id) === String(id));
+  const stockSelect = [...elements.tableBody.querySelectorAll(".admin-quick-stock")]
+    .find((select) => String(select.dataset.id) === String(id));
+  const featuredInput = [...elements.tableBody.querySelectorAll(".admin-quick-featured")]
+    .find((input) => String(input.dataset.id) === String(id));
+
+  const featured = Boolean(featuredInput?.checked);
+  const badgeSet = new Set(Array.isArray(product.badges) ? product.badges : []);
+  if (featured) {
+    badgeSet.add("destacado");
+  } else {
+    badgeSet.delete("destacado");
+  }
+
+  clearStatus();
+
+  try {
+    const client = getSupabaseClient();
+    const { error } = await client
+      .from("products")
+      .update({
+        price_uyu: Number(priceInput?.value || 0),
+        in_stock: stockSelect?.value !== "out",
+        featured,
+        badges: [...badgeSet]
+      })
+      .eq("id", id);
+
+    if (error) throw error;
+
+    showStatus("Cambio rápido guardado correctamente.");
+    await fetchProducts();
+  } catch (error) {
+    showStatus(error.message || "No pudimos guardar el cambio rápido.", "error");
+  }
+}
+
 async function deleteProduct(id) {
   clearStatus();
   const client = getSupabaseClient();
@@ -694,6 +765,10 @@ function attachTableEvents() {
       fillForm(product);
     }
 
+    if (action === "quick-save" && id) {
+      quickSaveProduct(id);
+    }
+
     if (action === "archive" && id && product) {
       openConfirm({
         title: "Archivar producto",
@@ -719,6 +794,14 @@ function attachTableEvents() {
 function handlePreviewRemoveClick(event) {
   const removeSaved = event.target.closest("[data-remove-image]");
   const removeLocal = event.target.closest("[data-remove-local-index]");
+  const moveSaved = event.target.closest("[data-move-image]");
+
+  if (moveSaved) {
+    const index = Number(moveSaved.dataset.moveImage);
+    const direction = moveSaved.dataset.direction === "up" ? -1 : 1;
+    moveTextareaImage(index, direction);
+    return;
+  }
 
   if (removeSaved) {
     const url = removeSaved.dataset.removeImage;
@@ -739,6 +822,51 @@ function handlePreviewRemoveClick(event) {
     state.localPreviewFiles.splice(index, 1);
     renderImagePreview();
   }
+}
+
+function moveTextareaImage(index, direction) {
+  const images = getTextareaImages();
+  const nextIndex = index + direction;
+
+  if (nextIndex < 0 || nextIndex >= images.length) return;
+
+  const [target] = images.splice(index, 1);
+  images.splice(nextIndex, 0, target);
+  writeLines(images);
+  renderImagePreview();
+}
+
+function moveTextareaImageToIndex(fromIndex, toIndex) {
+  const images = getTextareaImages();
+  if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0 || fromIndex >= images.length || toIndex >= images.length) return;
+
+  const [target] = images.splice(fromIndex, 1);
+  images.splice(toIndex, 0, target);
+  writeLines(images);
+  renderImagePreview();
+}
+
+function handlePreviewDragStart(event) {
+  const card = event.target.closest("[data-image-index]");
+  if (!card) return;
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", card.dataset.imageIndex);
+}
+
+function handlePreviewDragOver(event) {
+  if (!event.target.closest("[data-image-index]")) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+}
+
+function handlePreviewDrop(event) {
+  const card = event.target.closest("[data-image-index]");
+  if (!card) return;
+
+  event.preventDefault();
+  const fromIndex = Number(event.dataTransfer.getData("text/plain"));
+  const toIndex = Number(card.dataset.imageIndex);
+  moveTextareaImageToIndex(fromIndex, toIndex);
 }
 
 function updateLocalPreviewFiles() {
@@ -767,6 +895,9 @@ function bindEvents() {
   elements.productImages?.addEventListener("input", renderImagePreview);
   elements.productImageFiles?.addEventListener("change", updateLocalPreviewFiles);
   elements.productImagesPreview?.addEventListener("click", handlePreviewRemoveClick);
+  elements.productImagesPreview?.addEventListener("dragstart", handlePreviewDragStart);
+  elements.productImagesPreview?.addEventListener("dragover", handlePreviewDragOver);
+  elements.productImagesPreview?.addEventListener("drop", handlePreviewDrop);
 
   elements.uploadProductImagesBtn?.addEventListener("click", handleUploadImages);
 
@@ -809,6 +940,21 @@ function bindEvents() {
   attachTableEvents();
 }
 
+function applyUrlFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const stock = params.get("stock");
+  const missing = params.get("falta");
+
+  if (stock === "out" && elements.filterStock) {
+    elements.filterStock.value = "out";
+  }
+
+  if (missing === "imagen") {
+    state.missingImageOnly = true;
+    showStatus("Mostrando productos sin imagen cargada.");
+  }
+}
+
 async function bootstrap() {
   if (!isSupabaseConfigured()) {
     showStatus("Falta configurar Supabase antes de usar el CRUD real.", "error");
@@ -827,6 +973,7 @@ async function bootstrap() {
 
   try {
     await fetchCategories();
+    applyUrlFilters();
     await fetchProducts();
   } catch (error) {
     showStatus(error.message || "No pudimos cargar productos o categorías.", "error");

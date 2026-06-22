@@ -1,4 +1,5 @@
 .admin-body {
+  --font-heading: var(--font-body);
   background: #f3eee8;
   overflow-x: hidden;
 }
@@ -47,18 +48,24 @@
 
 .admin-brand {
   display: grid;
-  gap: 4px;
+  gap: 8px;
   padding: 6px 0 0;
+  justify-items: start;
+  line-height: 1;
 }
 
-.admin-brand .logo-title {
-  font-size: 30px;
+.admin-brand .brand-logo {
+  width: 156px;
+  height: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.96;
 }
 
-.admin-brand .logo-subtitle {
-  margin-top: 0;
+.admin-brand__subtitle {
   font-size: 10px;
   letter-spacing: 2px;
+  line-height: 1.2;
+  text-transform: uppercase;
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -206,6 +213,80 @@
 
 .admin-status-card.is-info {
   background: #f7f3ee;
+}
+
+.admin-action-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.admin-action-card {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 16px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid var(--color-border-soft);
+  box-shadow: 0 12px 28px rgba(66, 48, 34, 0.05);
+}
+
+.admin-action-card__icon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #f3ebe3;
+  color: var(--color-accent-dark);
+  font-size: 22px;
+}
+
+.admin-action-card p {
+  margin: 0 0 6px;
+  color: #7f6d63;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.admin-action-card strong {
+  display: block;
+  color: var(--color-text-strong);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.admin-action-card a {
+  display: inline-flex;
+  margin-top: 10px;
+  color: var(--color-accent-dark);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.admin-action-card--primary {
+  background: #423129;
+  color: #fff;
+  border-color: #423129;
+}
+
+.admin-action-card--primary .admin-action-card__icon {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.admin-action-card--primary p,
+.admin-action-card--primary a,
+.admin-action-card--primary strong {
+  color: #fff;
 }
 
 .admin-grid {
@@ -440,6 +521,10 @@
 }
 
 @media (max-width: 1280px) {
+  .admin-action-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .admin-grid--stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -514,6 +599,7 @@
 }
 
 @media (max-width: 640px) {
+  .admin-action-board,
   .admin-grid--stats,
   .admin-kpi-grid {
     grid-template-columns: 1fr;

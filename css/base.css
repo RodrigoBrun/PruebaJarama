@@ -2,8 +2,8 @@
   --color-bg-main: #ffffff;
   --color-bg-soft: #f7efe8;
   --color-bg-soft-2: #f2e7dc;
-  --color-bg-header: #b39683;
-  --color-bg-toolbar: #d8c3b3;
+  --color-bg-header: #ffffff;
+  --color-bg-toolbar: #e8d8cc;
   --color-text-main: #6d5b52;
   --color-text-strong: #4d3f39;
   --color-accent: #b99b89;
@@ -19,7 +19,7 @@
   --transition-fast: 0.25s ease;
   --max-width: 1620px;
   --page-padding: 42px;
-  --font-heading: "Playfair Display", serif;
+  --font-heading: "Jost", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -117,9 +117,10 @@ figure {
 .eyebrow {
   margin-bottom: 12px;
   color: var(--color-accent-dark);
+  font-family: var(--font-heading);
   font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 2.6px;
+  font-weight: 500;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
 }
 
@@ -135,6 +136,8 @@ figure {
 .section-heading h1 {
   font-family: var(--font-heading);
   font-size: clamp(36px, 3vw, 54px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
   line-height: 1.08;
   color: var(--color-text-strong);
 }
@@ -160,6 +163,8 @@ figure {
 .empty-state h2 {
   margin-bottom: 10px;
   font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: 0.03em;
   color: var(--color-text-strong);
 }
 

@@ -62,7 +62,7 @@ function createThumbButton(imageSrc, imageAlt, isActive = false) {
   const button = document.createElement("button");
   button.className = `thumb-btn ${isActive ? "active" : ""}`;
   button.type = "button";
-  button.innerHTML = `<img src="${imageSrc}" alt="${imageAlt}">`;
+  button.innerHTML = `<img src="${imageSrc}" alt="${imageAlt}" onerror="this.onerror=null; this.src='assets/logo-jarama.svg';">`;
 
   button.addEventListener("click", () => {
     document.querySelectorAll(".thumb-btn").forEach((thumb) => thumb.classList.remove("active"));
@@ -111,7 +111,7 @@ function createRelatedCard(relatedProduct) {
   article.innerHTML = `
     <a href="producto.html?slug=${encodeURIComponent(relatedProduct.slug)}" class="product-link">
       <div class="product-image-wrapper">
-        <img src="${relatedProduct.imagenes[0]}" alt="${relatedProduct.nombre}">
+        <img src="${relatedProduct.imagenes[0] || "assets/logo-jarama.svg"}" alt="${relatedProduct.nombre}" onerror="this.onerror=null; this.src='assets/logo-jarama.svg';">
         ${badge ? `<span class="product-ribbon ${badge.className}">${badge.label}</span>` : ""}
       </div>
     </a>

@@ -22,6 +22,8 @@
 .cart-summary h2 {
   margin: 0;
   font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: 0.04em;
   color: var(--color-text-strong);
 }
 
@@ -54,6 +56,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.cart-item__media img[src$=".svg"] {
+  object-fit: contain;
+  padding: 14px;
 }
 
 .cart-item__body {
@@ -132,6 +139,8 @@
 .cart-empty h3 {
   margin: 8px 0 10px;
   font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: 0.03em;
   color: var(--color-text-strong);
 }
 

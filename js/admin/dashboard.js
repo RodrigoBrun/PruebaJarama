@@ -10,6 +10,9 @@ const elements = {
   statStock: document.getElementById("statStock"),
   statOrders: document.getElementById("statOrders"),
   statPending: document.getElementById("statPending"),
+  taskPendingOrders: document.getElementById("taskPendingOrders"),
+  taskOutOfStock: document.getElementById("taskOutOfStock"),
+  taskMissingImages: document.getElementById("taskMissingImages"),
   recentOrdersBody: document.getElementById("recentOrdersBody"),
   logoutBtn: document.getElementById("logoutBtn"),
   salesCurrentTotal: document.getElementById("salesCurrentTotal"),
@@ -310,6 +313,9 @@ async function bootstrap() {
     elements.statStock.textContent = stats.stockProducts ?? "—";
     elements.statOrders.textContent = stats.totalOrders ?? "—";
     elements.statPending.textContent = stats.pendingOrders ?? "—";
+    elements.taskPendingOrders.textContent = stats.pendingOrders ?? "—";
+    elements.taskOutOfStock.textContent = stats.outOfStockProducts ?? "—";
+    elements.taskMissingImages.textContent = stats.productsWithoutImages ?? "—";
     renderOrders(stats.recentOrders || []);
 
     const analytics = await getMonthlyAnalytics();

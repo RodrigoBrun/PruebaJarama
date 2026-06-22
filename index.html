@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Jarama – Home & Deco</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/phosphor-icons"></script>
 
   <link rel="stylesheet" href="css/base.css" />
@@ -33,8 +33,7 @@
       </button>
 
       <a href="index.html" class="logo-main" aria-label="Ir al inicio de Jarama">
-        <span class="logo-title">JARAMA</span>
-        <span class="logo-subtitle">Home &amp; Deco</span>
+        <img class="brand-logo" src="assets/logo-jarama.svg" alt="Jarama Home &amp; Deco" width="553" height="119" />
       </a>
 
       <div class="header-right">
@@ -65,21 +64,19 @@
     </div>
   </section>
 
-  <section class="intro-block" aria-labelledby="intro-title">
-    <div class="container narrow-container">
-      <h2 id="intro-title">MUEBLES, DECO Y ACCESORIOS PARA TU ESPACIO</h2>
+  <section class="home-hero" aria-labelledby="intro-title">
+    <img src="assets/hero-jarama-living.webp" alt="Living elegante con muebles y deco seleccionados" />
+    <div class="home-hero__shade" aria-hidden="true"></div>
+    <div class="container-wide home-hero__content">
+      <p class="eyebrow">Home &amp; Deco</p>
+      <h1 id="intro-title">MUEBLES, DECO Y ACCESORIOS PARA TU ESPACIO</h1>
       <p>
-        En Jarama reunimos muebles, sillones, objetos deco, accesorios y artículos especiales
-        pensados para transformar cada rincón de tu casa.
+        Piezas seleccionadas para transformar cada rincón de tu casa con diseño, calidez y una lectura visual serena.
       </p>
-      <p>
-        Trabajamos con piezas seleccionadas que combinan diseño, calidez y estilo, buscando que cada
-        producto sume personalidad y armonía a tu ambiente.
-      </p>
-      <p>
-        Explorá nuestras categorías y encontrá desde muebles y sillones hasta detalles decorativos,
-        accesorios y artículos religiosos.
-      </p>
+      <div class="home-hero__actions">
+        <a class="btn btn-primary" href="#catalogoPrincipal">Explorar catálogo</a>
+        <a class="btn btn-secondary" href="#catalogoPrincipal" data-featured-link>Ver destacados</a>
+      </div>
     </div>
   </section>
 
@@ -91,8 +88,39 @@
             <p class="eyebrow">Selección destacada</p>
             <h2>Catálogo principal</h2>
           </div>
-          <p class="section-copy">Base dinámica lista para sumar filtros, stock real y panel admin más completo.</p>
+          <p class="section-copy">Filtrá por categoría, disponibilidad y precio para llegar más rápido a la pieza correcta.</p>
         </div>
+
+        <div class="catalog-controls" aria-label="Filtros del catálogo">
+          <label class="catalog-search">
+            <i class="ph-magnifying-glass" aria-hidden="true"></i>
+            <input type="search" id="catalogSearch" placeholder="Buscar producto, material o color" />
+          </label>
+
+          <select id="catalogCategoryFilter" aria-label="Filtrar por categoría">
+            <option value="all">Todas las categorías</option>
+          </select>
+
+          <select id="catalogStockFilter" aria-label="Filtrar por disponibilidad">
+            <option value="all">Todo el stock</option>
+            <option value="in">Disponible</option>
+            <option value="out">Sin stock</option>
+          </select>
+
+          <select id="catalogSort" aria-label="Ordenar catálogo">
+            <option value="featured">Destacados primero</option>
+            <option value="price-asc">Menor precio</option>
+            <option value="price-desc">Mayor precio</option>
+            <option value="name-asc">Nombre A-Z</option>
+          </select>
+
+          <button class="btn btn-secondary catalog-clear" type="button" id="catalogClearFilters">
+            <i class="ph-funnel-x" aria-hidden="true"></i>
+            Limpiar
+          </button>
+        </div>
+
+        <div class="catalog-summary" id="catalogSummary" aria-live="polite"></div>
 
         <div class="product-grid" id="catalogoGrid"></div>
 
@@ -159,33 +187,33 @@
     <div class="container-wide footer-grid">
       <div class="footer-brand">
         <a href="index.html" class="logo-main footer-logo">
-          <span class="logo-title">JARAMA</span>
-          <span class="logo-subtitle">Home &amp; Deco</span>
+          <img class="brand-logo" src="assets/logo-jarama.svg" alt="Jarama Home &amp; Deco" width="553" height="119" />
         </a>
       </div>
 
       <div class="footer-columns">
         <div class="footer-column">
-          <h3>Tiendas</h3>
+          <h3>Compra</h3>
           <ul>
-            <li><a href="#">Ubicación &amp; Horarios</a></li>
-            <li><a href="#">Asesoramiento</a></li>
+            <li><a href="#">Envíos a coordinar</a></li>
+            <li><a href="#">Retiro en local</a></li>
+            <li><a href="#">Cambios y reservas</a></li>
           </ul>
         </div>
         <div class="footer-column">
-          <h3>Información</h3>
+          <h3>Atención</h3>
           <ul>
+            <li><a href="#">Locales y horarios</a></li>
+            <li><a href="#">Asesoramiento deco</a></li>
             <li><a href="#">Preguntas frecuentes</a></li>
-            <li><a href="#">La empresa</a></li>
-            <li><a href="#">Términos y condiciones</a></li>
           </ul>
         </div>
         <div class="footer-column">
           <h3>Contacto</h3>
           <ul>
-            <li><a href="#">Contacto</a></li>
-            <li><a href="#">Newsletter</a></li>
-            <li><a href="#">Gift Guide</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Correo electrónico</a></li>
+            <li><a href="#">Términos y condiciones</a></li>
           </ul>
         </div>
       </div>
